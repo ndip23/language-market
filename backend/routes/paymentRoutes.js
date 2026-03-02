@@ -1,19 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/authMiddleware');
-const { paySubscription, payForLesson, swychrWebhook } = require('../controllers/paymentController');
+const { 
+    subscribeTeacher, 
+    getExchangeRate, 
+    payForLesson, 
+    getMethodsByCountry, 
+    requestWithdrawal 
+} = require('../controllers/paymentController');
 
-// @route   POST /api/payments/subscribe
-// @desc    Teacher pays for $5 or $10 plan
-router.post('/subscribe', auth, paySubscription);
+// --- PUBLIC/STUDENT ROUTES ---
+router.get('/rate', auth, getExchangeRate); // Get local price
+router.post('/lesson', auth, payForLesson); // Student pays teacher
 
-// @route   POST /api/payments/lesson
-// @desc    Student pays for a lesson
-router.post('/lesson', auth, payForLesson);
-
-// @route   POST /api/payments/webhook
-// @desc    Swychr calls this behind the scenes
-// NOTE: Webhooks should NOT have 'auth' middleware because Swychr is calling it, not a logged-in user!
-router.post('/webhook', swychrWebhook);
+// --- TEACHER ROUTES ---
+router.post('/subscribe', auth, subscribeTeacher); // Teacher pays sub
+router.get('/methods', auth, getMethodsByCountry); // Get local banks/momo
+router.post('/withdraw', auth, requestWithdrawal); // Teacher takes money out
 
 module.exports = router;

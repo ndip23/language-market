@@ -13,8 +13,8 @@ const SavedTutors = () => {
   useEffect(() => {
     const fetchSaved = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/students/saved', { 
-            headers: { 'x-auth-token': token } 
+        const res = await axios.get('http://localhost:5000/api/students/saved', {
+          headers: { 'x-auth-token': token }
         });
         setSaved(res.data);
       } catch (err) {
@@ -31,7 +31,7 @@ const SavedTutors = () => {
   return (
     <div className="space-y-10">
       <h2 className="text-4xl font-black text-slate-900 tracking-tighter italic mb-12 underline decoration-emerald-200 decoration-8 underline-offset-8">Bookmarks</h2>
-      
+
       {saved.length === 0 ? (
         /* LUXURY EMPTY STATE */
         <div className="bg-white rounded-[3rem] p-20 border border-slate-100 shadow-sm flex flex-col items-center text-center max-w-4xl mx-auto">
@@ -42,8 +42,8 @@ const SavedTutors = () => {
           <p className="text-slate-400 font-medium leading-relaxed max-w-sm mb-10">
             Save your favorite elite tutors here to easily book lessons and track your fluency journey.
           </p>
-          <Link to="/" className="bg-slate-900 text-white px-10 py-4 rounded-full font-black text-[10px] uppercase tracking-widest flex items-center hover:bg-emerald-600 transition-all shadow-xl shadow-slate-900/10 group">
-            <Search size={16} className="mr-3 group-hover:rotate-12 transition-transform" /> Explore Marketplace
+          <Link to="/dashboard/student/find" className="bg-slate-900 text-white px-12 py-6 rounded-[1.8rem] font-black text-[11px] uppercase tracking-[0.2em] flex items-center hover:bg-emerald-600 transition-all shadow-xl shadow-slate-900/20 group">
+            Find a Tutor <ArrowRight size={18} className="ml-3 group-hover:translate-x-2 transition-transform" />
           </Link>
         </div>
       ) : (
@@ -53,7 +53,7 @@ const SavedTutors = () => {
             <div key={t._id} className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm relative group hover:shadow-2xl transition-all">
               <Heart className="absolute top-10 right-10 text-red-500 fill-red-500 z-10" />
               <div className="relative overflow-hidden rounded-[2rem] mb-6">
-                <img src={t.profilePicture || 'https://images.unsplash.com/photo-1544717305-2782549b5136'} className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700" alt=""/>
+                <img src={t.profilePicture || 'https://images.unsplash.com/photo-1544717305-2782549b5136'} className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
               </div>
               <h3 className="text-xl font-black text-slate-900">{t.name}</h3>
               <div className="flex items-center text-amber-500 text-xs font-bold mt-1 mb-6">

@@ -7,4 +7,5 @@ const messageSchema = new mongoose.Schema({
   isRead: { type: Boolean, default: false }
 }, { timestamps: true });
 
+
 module.exports = mongoose.model('Message', messageSchema);

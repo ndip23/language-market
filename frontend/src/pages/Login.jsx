@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { ArrowRight, Globe, Eye, EyeOff } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { FullPageLoader } from '../components/Loader';
+import { Loader } from '../components/Loader';
 import axios from 'axios';
 
 const Login = () => {
@@ -20,20 +20,38 @@ const Login = () => {
     const tid = toast.loading('Authenticating...');
 
     try {
+      // 1. API Call to Login
       const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
       
-      // Update Context
+      // 2. Save to Context and LocalStorage
       login(res.data.user, res.data.token);
-      
-      toast.success(`Welcome back, ${res.data.user.name.split(' ')[0]}!`, { id: tid });
 
-      // ROLE BASED REDIRECTION
-      if (res.data.user.role === 'admin') navigate('/admin');
-      else if (res.data.user.role === 'teacher') navigate('/dashboard/teacher');
-      else navigate('/dashboard/student');
+      // 3. SMART REDIRECT LOGIC
+      // Check if user was trying to message a tutor before they were told to login
+      const returnTo = location.state?.returnTo;
+      const tutorData = location.state?.selectedTutor;
+
+      if (returnTo && tutorData) {
+        toast.success(`Welcome back! Opening chat with ${tutorData.name}`, { id: tid });
+        navigate(returnTo, { state: { selectedTutor: tutorData } });
+      } else {
+        const firstName = res.data.user.name.split(' ')[0];
+        toast.success(`Welcome back, ${firstName}!`, { id: tid });
+
+        // Standard redirection based on role
+        if (res.data.user.role === 'admin') {
+          navigate('/admin');
+        } else if (res.data.user.role === 'teacher') {
+          navigate('/dashboard/teacher');
+        } else {
+          navigate('/dashboard/student');
+        }
+      }
 
     } catch (err) {
-      toast.error(err.response?.data?.msg || 'Invalid credentials', { id: tid });
+      // Handle login errors
+      const errorMsg = err.response?.data?.msg || 'Invalid email or password';
+      toast.error(errorMsg, { id: tid });
     } finally {
       setLoading(false);
     }
@@ -41,7 +59,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 pt-20">
-      {loading && <FullPageLoader />}
+      {loading && <Loader />}
       <div className="w-full max-w-md bg-white p-10 rounded-[2.5rem] shadow-2xl border border-slate-100">
         <div className="flex justify-center mb-6">
           <div className="bg-emerald-500 text-white p-3 rounded-2xl shadow-lg shadow-emerald-500/30"><Globe size={28} /></div>

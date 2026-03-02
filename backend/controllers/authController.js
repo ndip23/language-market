@@ -2,44 +2,53 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// Register a new Student or Teacher
+// ✅ REGISTER USER
 exports.registerUser = async (req, res) => {
   try {
-    const { name, email, password, role, language, pricePerLesson } = req.body;
+    // 1. Extract ALL fields including mobile and countryCode
+    const { name, email, password, role, language, pricePerLesson, mobile, countryCode } = req.body;
 
-    // Check if user exists
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ msg: 'User already exists' });
 
-    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create user object
+    // 2. Create user object with all required fields
     const newUser = {
       name,
       email,
       password: hashedPassword,
-      role
+      role,
+      mobile,      
+      countryCode, 
+      subscription: {
+        plan: 'none',
+        studentLimit: 0,
+        currentConnections: 0,
+        status: 'inactive'
+      }
     };
 
-    // If teacher, add teacher profile data
     if (role === 'teacher') {
       newUser.teacherProfile = {
         language,
         pricePerLesson,
-        paymentPreference: 'platform' // Default, can be updated later
+        isApproved: false
       };
     }
 
     user = new User(newUser);
     await user.save();
 
-    // Create JWT Token
     const payload = { user: { id: user.id, role: user.role } };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' });
 
-    res.status(201).json({ token, user: { id: user.id, name: user.name, role: user.role } });
+    // 3. Return full user object
+    res.status(201).json({ 
+        token, 
+        user: { id: user.id, name: user.name, role: user.role, email: user.email, mobile: user.mobile, countryCode: user.countryCode } 
+    });
 
   } catch (err) {
     console.error(err.message);
@@ -47,11 +56,10 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-// Login User
+// ✅ LOGIN USER
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ msg: 'Invalid Credentials' });
 
@@ -61,33 +69,34 @@ exports.loginUser = async (req, res) => {
     const payload = { user: { id: user.id, role: user.role } };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
 
-    res.json({ token, user: { id: user.id, name: user.name, role: user.role } });
-
+    // Return everything the frontend needs
+    res.json({ 
+        token, 
+        user: { 
+            id: user.id, name: user.name, role: user.role, email: user.email, 
+            mobile: user.mobile, countryCode: user.countryCode, profilePicture: user.profilePicture,
+            subscription: user.subscription
+        } 
+    });
   } catch (err) {
-    console.error(err.message);
     res.status(500).send('Server Error');
   }
 };
-// @desc    Update current user details
-// @route   PUT /api/auth/update-me
+
+// ✅ UPDATE ME
 exports.updateMe = async (req, res) => {
   try {
-    const { name, email } = req.body;
-    
-    // Find user and update
+    const { name, email, mobile } = req.body;
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ msg: "User not found" });
 
     if (name) user.name = name;
     if (email) user.email = email;
+    if (mobile) user.mobile = mobile;
 
     await user.save();
-
-    // Return the updated user (excluding password)
-    const updatedUser = await User.findById(req.user.id).select('-password');
-    res.json(updatedUser);
+    res.json(user); // Returns the full updated user
   } catch (err) {
-    console.error(err.message);
     res.status(500).send('Server Error');
   }
 };

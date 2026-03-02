@@ -7,6 +7,9 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ['student', 'teacher', 'admin'], default: 'student' },
   profilePicture: { type: String, default: '' },
   savedTeachers: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  mobile: { type: String, required: true },
+  countryCode: { type: String, default: 'CM' },
+  balance: { type: Number, default: 0 },
   // Teacher Specific Data
   teacherProfile: {
     language: { type: String, enum: ['English', 'French'] },

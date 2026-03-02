@@ -60,3 +60,32 @@ exports.getMyConnections = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+exports.getTeacherStats = async (req, res) => {
+  try {
+    const teacherId = req.user.id;
+
+    // 1. Get Teacher Profile for Balance and Rating
+    const teacher = await User.findById(teacherId);
+
+    // 2. Count Total Student Connections
+    const totalStudents = await Connection.countDocuments({ teacher: teacherId });
+
+    // 3. Calculate Total Earnings (Sum of teacherNet in pricing)
+    const connections = await Connection.find({ teacher: teacherId, isPaid: true });
+    const totalEarnings = connections.reduce((acc, curr) => acc + (curr.pricing?.teacherEarnings || 0), 0);
+
+    // 4. Get New Requests (Pending)
+    const pendingRequests = await Connection.countDocuments({ teacher: teacherId, status: 'pending' });
+
+    res.json({
+      balance: teacher.balance || 0,
+      rating: teacher.teacherProfile?.rating || 5.0,
+      totalStudents,
+      totalEarnings,
+      pendingRequests,
+      plan: teacher.subscription?.plan || 'none'
+    });
+  } catch (err) {
+    res.status(500).send("Server Error");
+  }
+};
