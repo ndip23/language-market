@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/authMiddleware');
-const { sendMessage, getMessages, markAsRead, getUnreadCounts } = require('../controllers/messageController');
+const { sendMessage, getMessages, markAsRead, getUnreadCounts } = require('../controllers/MessageController');
 
 // All messaging routes are protected by auth
 router.post('/', auth, sendMessage);
