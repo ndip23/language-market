@@ -18,8 +18,8 @@ const TeacherSubscription = () => {
   useEffect(() => {
     const fetchRates = async () => {
       try {
-        const res5 = await axios.get(`http://localhost:5000/api/payments/rate?countryCode=${region.code}&amount=5`);
-        const res10 = await axios.get(`http://localhost:5000/api/payments/rate?countryCode=${region.code}&amount=10`);
+        const res5 = await axios.get(`/payments/rate?countryCode=${region.code}&amount=5`);
+        const res10 = await axios.get(`/payments/rate?countryCode=${region.code}&amount=10`);
         
         setLocalPrices({
           basic: res5.data.localAmount.toLocaleString(),

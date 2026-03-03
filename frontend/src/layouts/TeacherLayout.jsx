@@ -23,7 +23,7 @@ const TeacherLayout = () => {
   // 2. FETCH UNREAD MESSAGES
   const fetchTotalUnread = async () => {
     try {
-        const res = await axios.get('http://localhost:5000/api/messages/unread/count', {
+        const res = await axios.get('/messages/unread/count', {
             headers: { 'x-auth-token': token }
         });
         const sum = res.data.reduce((acc, curr) => acc + curr.count, 0);

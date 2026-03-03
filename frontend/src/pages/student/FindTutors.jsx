@@ -10,7 +10,7 @@ const FindTutors = () => {
   const [filters, setFilters] = useState({ language: '', maxPrice: '' });
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/teachers?language=${filters.language}&maxPrice=${filters.maxPrice}`).then(res => {
+    axios.get(`/teachers?language=${filters.language}&maxPrice=${filters.maxPrice}`).then(res => {
       setTeachers(res.data);
       setLoading(false);
     });

@@ -50,7 +50,7 @@ const Register = () => {
       };
 
       // 4. API Call to Register
-      const res = await axios.post('http://localhost:5000/api/auth/register', payload);
+      const res = await axios.post('/auth/register', payload);
 
       // 5. Save to Context and LocalStorage
       login(res.data.user, res.data.token);

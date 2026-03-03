@@ -34,7 +34,7 @@ const Settings = () => {
       // Logic: Prepend the dial code back for the database
       const fullMobile = `${selectedRegion.dialCode}${formData.mobile}`;
 
-      const res = await axios.put('http://localhost:5000/api/auth/update-me', {
+      const res = await axios.put('/auth/update-me', {
         ...formData,
         mobile: fullMobile
       }, { headers: { 'x-auth-token': token } });
@@ -53,7 +53,7 @@ const Settings = () => {
     data.append('image', file);
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/upload/profile-pic', data, {
+      const res = await axios.post('/upload/profile-pic', data, {
         headers: { 'x-auth-token': token, 'Content-Type': 'multipart/form-data' }
       });
       login(res.data, token); // res.data is the full user from our fixed backend

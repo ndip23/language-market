@@ -22,7 +22,7 @@ const Checkout = () => {
   useEffect(() => {
     const getRate = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/payments/rate?countryCode=${region.code}&amount=${plan.amount}`);
+        const res = await axios.get(`/payments/rate?countryCode=${region.code}&amount=${plan.amount}`);
         setLocalAmount(res.data.localAmount);
       } catch (err) {
         setLocalAmount(Math.ceil(plan.amount * 650)); 
@@ -35,7 +35,7 @@ const Checkout = () => {
     setProcessing(true);
     const tid = toast.loading("Confirming Order with Swychr...");
     try {
-      const res = await axios.post('http://localhost:5000/api/payments/subscribe', {
+      const res = await axios.post('/payments/subscribe', {
         plan: plan.name.toLowerCase(),
         countryCode: region.code,
         mobile: user.mobile,

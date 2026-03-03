@@ -15,7 +15,7 @@ const TeacherStudents = () => {
 
   useEffect(() => {
     if (hasPlan) {
-      axios.get('http://localhost:5000/api/dashboard/connections')
+      axios.get('/dashboard/connections')
         .then(res => setConnections(res.data))
         .finally(() => setLoading(false));
     }

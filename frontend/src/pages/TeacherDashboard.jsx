@@ -11,15 +11,15 @@ const TeacherDashboard = () => {
   useEffect(() => {
     const fetch = async () => {
       const config = { headers: { 'x-auth-token': token } };
-      const profile = await axios.get(`http://localhost:5000/api/teachers/${user.id}`);
-      const connections = await axios.get('http://localhost:5000/api/dashboard/connections', config);
+      const profile = await axios.get(`/teachers/${user.id}`);
+      const connections = await axios.get('i/dashboard/connections', config);
       setData({ profile: profile.data, connections: connections.data });
     };
     fetch();
   }, [token, user.id]);
 
   const handleSub = async (plan) => {
-    const res = await axios.post('http://localhost:5000/api/payments/subscribe', { plan }, { headers: { 'x-auth-token': token } });
+    const res = await axios.post('/payments/subscribe', { plan }, { headers: { 'x-auth-token': token } });
     window.location.href = res.data.paymentUrl;
   };
 

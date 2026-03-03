@@ -13,7 +13,7 @@ const SavedTutors = () => {
   useEffect(() => {
     const fetchSaved = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/students/saved', {
+        const res = await axios.get('/students/saved', {
           headers: { 'x-auth-token': token }
         });
         setSaved(res.data);

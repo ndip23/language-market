@@ -22,7 +22,7 @@ const StudentCheckout = () => {
   useEffect(() => {
     const getRate = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/payments/rate?countryCode=${region.code}&amount=${lessonData.price}`);
+        const res = await axios.get(`/payments/rate?countryCode=${region.code}&amount=${lessonData.price}`);
         setLocalAmount(res.data.localAmount);
       } catch (err) {
         setLocalAmount(Math.ceil(lessonData.price * 650)); 
@@ -35,7 +35,7 @@ const StudentCheckout = () => {
     setProcessing(true);
     const tid = toast.loading("Confirming Order...");
     try {
-      const res = await axios.post('http://localhost:5000/api/payments/lesson', {
+      const res = await axios.post('/payments/lesson', {
         teacherId: lessonData.teacherId,
         amount: localAmount,
         connectionId: lessonData.connectionId,

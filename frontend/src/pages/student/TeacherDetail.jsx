@@ -24,7 +24,7 @@ const TeacherDetail = () => {
   useEffect(() => {
     const fetchTeacher = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/teachers/${id}`);
+        const res = await axios.get(`/teachers/${id}`);
         setTeacher(res.data);
       } catch (err) {
         toast.error("Tutor profile not found");
@@ -40,7 +40,7 @@ const TeacherDetail = () => {
   useEffect(() => {
     const checkBooking = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/dashboard/connections', {
+        const res = await axios.get('/dashboard/connections', {
             headers: { 'x-auth-token': token }
         });
         // Check if any connection matches this teacher ID
@@ -58,7 +58,7 @@ const TeacherDetail = () => {
     setBooking(true);
     const tid = toast.loading("Sending request to tutor...");
     try {
-      await axios.post('http://localhost:5000/api/connections/request',
+      await axios.post('/connections/request',
         { teacherId: id },
         { headers: { 'x-auth-token': token } }
       );

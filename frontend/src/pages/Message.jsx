@@ -9,7 +9,7 @@ const Messages = ({ receiverId, receiverName }) => {
   const { token, user } = useContext(AuthContext);
 
   const fetchChat = async () => {
-    const res = await axios.get(`http://localhost:5000/api/messages/${receiverId}`, {
+    const res = await axios.get(`/messages/${receiverId}`, {
       headers: { 'x-auth-token': token }
     });
     setMessages(res.data);
@@ -18,7 +18,7 @@ const Messages = ({ receiverId, receiverName }) => {
   useEffect(() => { fetchChat(); }, [receiverId]);
 
   const onSend = async () => {
-    await axios.post('http://localhost:5000/api/messages', { receiverId, content: text }, {
+    await axios.post('/messages', { receiverId, content: text }, {
       headers: { 'x-auth-token': token }
     });
     setText('');

@@ -12,7 +12,7 @@ const Lessons = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/dashboard/connections').then(res => setLessons(res.data)).finally(() => setLoading(false));
+    axios.get('/dashboard/connections').then(res => setLessons(res.data)).finally(() => setLoading(false));
   }, [token]);
 
   const handlePayRedirect = (lesson) => {

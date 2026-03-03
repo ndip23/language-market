@@ -17,7 +17,7 @@ const Home = () => {
   const fetchTeachers = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/teachers?language=${filters.language}&maxPrice=${filters.maxPrice}`);
+      const res = await axios.get(`/teachers?language=${filters.language}&maxPrice=${filters.maxPrice}`);
       setTeachers(res.data);
     } catch (error) {
       console.error("Fetch Error:", error);

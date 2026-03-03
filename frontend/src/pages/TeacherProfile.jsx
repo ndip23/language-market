@@ -44,7 +44,7 @@ const TeacherProfile = () => {
   useEffect(() => {
     const fetchTeacher = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/teachers/${id}`);
+        const res = await axios.get(`/teachers/${id}`);
         setTeacher(res.data);
       } catch (err) {
         toast.error("Tutor not found in our elite roster.");

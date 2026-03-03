@@ -27,7 +27,7 @@ const Messages = () => {
       const config = { headers: { 'x-auth-token': token } };
       
       // Fetch Connections
-      const res = await axios.get('http://localhost:5000/api/dashboard/connections', config);
+      const res = await axios.get('/dashboard/connections', config);
       let participantList = res.data.map(c => 
         user.role === 'teacher' ? c.student : c.teacher
       ).filter(p => p !== null);
@@ -35,7 +35,7 @@ const Messages = () => {
       let uniqueParticipants = participantList.filter((v, i, a) => a.findIndex(t => t._id === v._id) === i);
       
       // Fetch Unread Counts from Backend
-      const unreadRes = await axios.get('http://localhost:5000/api/messages/unread/count', config);
+      const unreadRes = await axios.get('/messages/unread/count', config);
       const countMap = unreadRes.data.reduce((acc, curr) => ({ ...acc, [curr._id]: curr.count }), {});
       setUnreadCounts(countMap);
 
@@ -66,13 +66,13 @@ const Messages = () => {
       const config = { headers: { 'x-auth-token': token } };
 
       // Mark messages as read in DB
-      axios.put(`http://localhost:5000/api/messages/read/${activeChat._id}`, {}, config);
+      axios.put(`/messages/read/${activeChat._id}`, {}, config);
       
       // Reset count locally for this user
       setUnreadCounts(prev => ({ ...prev, [activeChat._id]: 0 }));
 
       // Fetch history
-      axios.get(`http://localhost:5000/api/messages/${activeChat._id}`, config)
+      axios.get(`/messages/${activeChat._id}`, config)
         .then(res => setMessages(res.data));
     }
   }, [activeChat, token]);
@@ -86,7 +86,7 @@ const Messages = () => {
         // If chat is open, add message and mark read
         if (activeChat && data.sender === activeChat._id) {
           setMessages((prev) => [...prev, data]);
-          axios.put(`http://localhost:5000/api/messages/read/${data.sender}`, {}, { headers: { 'x-auth-token': token } });
+          axios.put(`/messages/read/${data.sender}`, {}, { headers: { 'x-auth-token': token } });
         } else {
           // If chat is CLOSED, increment the unread badge
           setUnreadCounts(prev => ({
@@ -110,7 +110,7 @@ const Messages = () => {
     const msgData = { receiverId: activeChat._id, content: text, sender: user.id, senderName: user.name };
     try {
       socket.emit('send_message', msgData);
-      await axios.post('http://localhost:5000/api/messages', msgData);
+      await axios.post('/messages', msgData);
       setMessages([...messages, msgData]);
       setText('');
     } catch (err) { toast.error("Delivery failed."); }

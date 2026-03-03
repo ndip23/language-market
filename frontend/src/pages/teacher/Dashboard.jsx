@@ -30,11 +30,11 @@ const TeacherDashboard = () => {
       try {
         const config = { headers: { 'x-auth-token': token } };
         // Fetch Live Stats
-        const statsRes = await axios.get('http://localhost:5000/api/dashboard/teacher/stats', config);
+        const statsRes = await axios.get('/dashboard/teacher/stats', config);
         setStats(statsRes.data);
 
         // Fetch Dynamic Payout Methods (Swychr Aware)
-        const methodsRes = await axios.get('http://localhost:5000/api/payments/methods', config);
+        const methodsRes = await axios.get('/payments/methods', config);
         setPayoutMethods(methodsRes.data);
       } catch (err) {
         console.error("Dashboard Sync Failed");
@@ -52,7 +52,7 @@ const TeacherDashboard = () => {
     setIsProcessing(true);
     const tid = toast.loading("Connecting to Payout Engine...");
     try {
-      const res = await axios.post('http://localhost:5000/api/payments/withdraw', withdrawalData, {
+      const res = await axios.post('/payments/withdraw', withdrawalData, {
         headers: { 'x-auth-token': token }
       });
       // Update balance locally

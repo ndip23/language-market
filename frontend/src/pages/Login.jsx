@@ -21,7 +21,7 @@ const Login = () => {
 
     try {
       // 1. API Call to Login
-      const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const res = await axios.post('/auth/login', { email, password });
       
       // 2. Save to Context and LocalStorage
       login(res.data.user, res.data.token);

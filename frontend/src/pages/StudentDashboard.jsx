@@ -12,7 +12,7 @@ const StudentDashboard = () => {
   useEffect(() => {
     const fetchDocs = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/dashboard/connections', {
+        const res = await axios.get('/dashboard/connections', {
           headers: { 'x-auth-token': token }
         });
         setConnections(res.data);
@@ -23,7 +23,7 @@ const StudentDashboard = () => {
 
   const handlePay = async (id) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/payments/lesson', { connectionId: id }, {
+      const res = await axios.post('/payments/lesson', { connectionId: id }, {
         headers: { 'x-auth-token': token }
       });
       window.location.href = res.data.paymentUrl; // Redirect to Swychr

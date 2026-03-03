@@ -19,7 +19,7 @@ const ProfileBuilder = () => {
     e.preventDefault();
     const tid = toast.loading("Saving profile...");
     try {
-      const res = await axios.put('http://localhost:5000/api/dashboard/teacher/profile', formData);
+      const res = await axios.put('/dashboard/teacher/profile', formData);
       login(res.data, token);
       toast.success("Profile Updated!", { id: tid });
     } catch (err) { toast.error("Error saving.", { id: tid }); }

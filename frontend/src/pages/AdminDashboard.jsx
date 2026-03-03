@@ -9,15 +9,15 @@ const AdminDashboard = () => {
 
   const fetch = async () => {
     const config = { headers: { 'x-auth-token': token } };
-    const stats = await axios.get('http://localhost:5000/api/admin/stats', config);
-    const teachers = await axios.get('http://localhost:5000/api/admin/teachers', config);
+    const stats = await axios.get('/admin/stats', config);
+    const teachers = await axios.get('/admin/teachers', config);
     setData({ stats: stats.data, teachers: teachers.data });
   };
 
   useEffect(() => { fetch(); }, [token]);
 
   const toggleApprove = async (id, current) => {
-    await axios.put(`http://localhost:5000/api/admin/teacher/${id}/status`, { isApproved: !current }, { headers: { 'x-auth-token': token } });
+    await axios.put(`/admin/teacher/${id}/status`, { isApproved: !current }, { headers: { 'x-auth-token': token } });
     fetch();
   };
 
