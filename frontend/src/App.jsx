@@ -27,7 +27,7 @@ import Lessons from './pages/student/Lessons';
 import SavedTutors from './pages/student/SavedTutors';
 import Messages from './pages/student/Messages';
 import StudentSettings from './pages/student/Settings';
-import StudentCheckout from './pages/student/StudentCheckout';
+import StudentCheckOut from './pages/student/StudentCheckOut';
 import StudentHowItWorks from './pages/student/StudentHowItWorks';
 
 // --- TEACHER PORTAL PAGES ---
@@ -90,7 +90,7 @@ function App() {
             <Route path="saved" element={<SavedTutors />} />
             <Route path="messages" element={<Messages />} />
             <Route path="settings" element={<StudentSettings />} />
-            <Route path="checkout" element={<StudentCheckout />} />
+            <Route path="checkout" element={<StudentCheckOut />} />
             <Route path="how-it-works" element={<StudentHowItWorks />} />
           </Route>
 
