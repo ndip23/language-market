@@ -51,3 +51,4 @@ const Messages = ({ receiverId, receiverName }) => {
     </div>
   );
 };
+export default Messages;

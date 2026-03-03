@@ -36,7 +36,7 @@ import TeacherStudents from './pages/teacher/Students';
 import ProfileBuilder from './pages/teacher/ProfileBuilder';
 import TeacherSubscription from './pages/teacher/Subscription';
 import TeacherMessages from './pages/teacher/Messages';
-import TeacherCheckout from './pages/teacher/Checkout';
+import TeacherCheckOut from './pages/teacher/CheckOut';
 
 // --- ADMIN ---
 import AdminDashboard from './pages/AdminDashboard';
@@ -103,7 +103,7 @@ function App() {
             <Route path="students" element={<TeacherStudents />} />
             <Route path="profile" element={<ProfileBuilder />} />
             <Route path="subscription" element={<TeacherSubscription />} />
-            <Route path="checkout" element={<TeacherCheckout />} />
+            <Route path="checkout" element={<TeacherCheckOut />} />
             <Route path="messages" element={<TeacherMessages />} />
             <Route path="settings" element={<StudentSettings />} /> {/* Shared Settings UI */}
           </Route>

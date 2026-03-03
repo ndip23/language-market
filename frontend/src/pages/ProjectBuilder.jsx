@@ -37,3 +37,4 @@ const ProfileBuilder = () => (
     </div>
   </div>
 );
+export default ProfileBuilder;
