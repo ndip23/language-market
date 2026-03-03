@@ -40,7 +40,12 @@ app.use((req, res, next) => {
 app.use(hpp());
 
 // 7. Production CORS Configuration
-const allowedOrigins = [process.env.CLIENT_URL, 'http://localhost:5173'];
+const allowedOrigins = [
+  "https://learnlanguagehelp.site",
+  "https://www.learnlanguagehelp.site",
+  "http://localhost:5173"
+];
+
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl)
