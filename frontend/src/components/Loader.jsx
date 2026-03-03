@@ -1,4 +1,5 @@
 import React from 'react';
+import Logo from './Logo';
 
 export const FullPageLoader = ({ message }) => (
   <div className="fixed inset-0 bg-white/40 backdrop-blur-xl z-[9999] flex justify-center items-center pointer-events-auto">

@@ -6,6 +6,7 @@ import {
   CreditCard, MessageSquare, Settings, LogOut, Globe, ShieldCheck, Menu, X 
 } from 'lucide-react';
 import axios from 'axios';
+import Logo from '../components/Logo';
 
 const TeacherLayout = () => {
   const { user, logout, token } = useContext(AuthContext);
@@ -58,7 +59,7 @@ const TeacherLayout = () => {
 
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r flex flex-col transform transition-transform duration-300 md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-8 flex justify-between items-center">
-          <Link to="/" className="flex items-center space-x-2"><div className="bg-slate-900 text-white p-1.5 rounded-lg"><Globe size={18} /></div><span className="text-xl font-black text-slate-900 italic tracking-tighter">LangConnect.</span></Link>
+          <Link to="/" className="flex items-center space-x-2"><Logo className="h-10 md:h-12" /><span className="text-xl font-black text-slate-900 italic tracking-tighter">LangConnect.</span></Link>
           <button onClick={() => setSidebarOpen(false)} className="md:hidden p-2 text-slate-400"><X size={20}/></button>
         </div>
 

@@ -49,12 +49,21 @@ const accountPeService = {
     return data.data;
   },
 
-  createPayout: async (token, payload) => {
+  createPayoutTransaction: async (token, payload) => {
     const { data } = await payoutApi.post('/create_transaction', payload, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return data;
+},
+
+  getPaymentStatus: async (token, transaction_id) => {
+    const { data } = await payinApi.post('/payment_link_status', { transaction_id }, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return data;
   }
+
 };
+
 
 module.exports = accountPeService; // ✅ Exports the entire object

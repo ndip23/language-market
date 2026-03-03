@@ -100,3 +100,13 @@ exports.updateMe = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+// @desc    Get current user profile
+// @route   GET /api/auth/me
+exports.getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    res.json(user);
+  } catch (err) {
+    res.status(500).send('Server Error');
+  }
+};

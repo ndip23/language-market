@@ -3,6 +3,7 @@ import { Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { LayoutDashboard, BookOpen, Heart, MessageSquare, Settings, LogOut, Globe, Menu, X, Search } from 'lucide-react';
 import axios from 'axios';
+import Logo from '../components/Logo';
 
 const StudentLayout = () => {
   const { user, logout, token } = useContext(AuthContext);
@@ -54,7 +55,7 @@ const StudentLayout = () => {
       <aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-100 flex flex-col transform transition-transform duration-300 ease-in-out md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-8 flex justify-between items-center">
           <Link to="/" className="flex items-center space-x-2">
-            <div className="bg-slate-900 text-white p-2 rounded-xl"><Globe size={20} /></div>
+            <Logo className="h-10 md:h-12" />
             <span className="text-xl font-black text-slate-900 tracking-tighter italic">LangConnect.</span>
           </Link>
           <button onClick={() => setSidebarOpen(false)} className="md:hidden p-2 text-slate-400"><X size={20}/></button>

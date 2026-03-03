@@ -31,7 +31,7 @@ exports.payForLesson = async (req, res) => {
     }
 
     const uniqueTxnId = `LES${Date.now()}${student._id.toString().substring(0, 4)}`;
-    
+
     // THE REMARK: LESSON | connectionId | local_amount
     const remarkData = `LESSON|${conn._id}|${amount}`;
 
@@ -40,7 +40,7 @@ exports.payForLesson = async (req, res) => {
       name: student.name.toUpperCase(),
       email: student.email,
       mobile: mobile,
-      amount: amount, 
+      amount: amount,
       currency: currency,
       transaction_id: uniqueTxnId,
       description: `Lesson Payment: ${student.name}`,
@@ -62,7 +62,7 @@ exports.payForLesson = async (req, res) => {
 // 3. TEACHER SUBSCRIPTION ($5 or $10)
 exports.subscribeTeacher = async (req, res) => {
   const { plan, countryCode, mobile, currency } = req.body;
-  const usdAmount = plan === 'pro' ? 10 : 0.5;
+  const usdAmount = plan === 'pro' ? 10 : 5;
 
   try {
     const user = await User.findById(req.user.id);
@@ -80,15 +80,15 @@ exports.subscribeTeacher = async (req, res) => {
       mobile: mobile,
       amount: finalAmount,
       currency: currency,
-      transaction_id: `SUB${Date.now()}${user._id.toString().substring(0,4)}`,
+      transaction_id: `SUB${Date.now()}${user._id.toString().substring(0, 4)}`,
       description: `Tutor Plan: ${plan.toUpperCase()}`,
       pass_digital_charge: true,
       remark: remarkData,
       // 🚨 REDIRECT INCLUDES REMARK FOR FRONTEND VERIFICATION
-      redirect_url: `${process.env.CLIENT_URL}/dashboard/teacher/subscription?status=success&remark=${remarkData}`,
+      redirect_url: `${process.env.CLIENT_URL}/dashboard/teacher/subscription?status=success&transaction_id=SUB${Date.now()}&remark=${encodeURIComponent(remarkData)}`,
       callback_url: `${process.env.BACKEND_URL}/api/payments/webhook`
     };
- const result = await accountPeService.createLink(token, payload);
+    const result = await accountPeService.createLink(token, payload);
     res.json({ paymentUrl: result.data.payment_link });
   } catch (err) {
     res.status(500).json({ msg: "Subscription initialization failed" });
@@ -110,7 +110,7 @@ exports.getMethodsByCountry = async (req, res) => {
 // 5. TEACHER WITHDRAWAL (Payout)
 exports.requestWithdrawal = async (req, res) => {
   const { amount, methodCode, accountNumber } = req.body;
-  
+
   try {
     // A. Verify Teacher and Balance
     const teacher = await User.findById(req.user.id);
@@ -118,7 +118,7 @@ exports.requestWithdrawal = async (req, res) => {
 
     const withdrawAmount = Number(amount);
     if (teacher.balance < withdrawAmount) {
-        return res.status(400).json({ msg: "Insufficient balance for this withdrawal." });
+      return res.status(400).json({ msg: "Insufficient balance for this withdrawal." });
     }
 
     // B. Login to Swychr Payout Engine
@@ -140,22 +140,22 @@ exports.requestWithdrawal = async (req, res) => {
     const result = await accountPeService.createPayoutTransaction(token, payload);
 
     if (result.status === 200 || result.status === 'success') {
-        
-        // E. SUCCESS: Deduct from DB Balance
-        teacher.balance -= withdrawAmount;
-        await teacher.save();
 
-        // F. Send Success Message back to Frontend
-        res.json({ 
-            success: true,
-            msg: `Withdrawal of $${withdrawAmount} processed successfully. Check your local account.`, 
-            newBalance: teacher.balance 
-        });
+      // E. SUCCESS: Deduct from DB Balance
+      teacher.balance -= withdrawAmount;
+      await teacher.save();
 
-        console.log(`✅ Withdrawal Successful: User ${teacher.name} deducted $${withdrawAmount}`);
+      // F. Send Success Message back to Frontend
+      res.json({
+        success: true,
+        msg: `Withdrawal of $${withdrawAmount} processed successfully. Check your local account.`,
+        newBalance: teacher.balance
+      });
+
+      console.log(`✅ Withdrawal Successful: User ${teacher.name} deducted $${withdrawAmount}`);
     } else {
-        console.error("❌ Gateway Rejected Payout:", result.message);
-        res.status(400).json({ msg: result.message || "The payment provider rejected the transaction." });
+      console.error("❌ Gateway Rejected Payout:", result.message);
+      res.status(400).json({ msg: result.message || "The payment provider rejected the transaction." });
     }
 
   } catch (err) {
@@ -175,7 +175,7 @@ exports.verifyPaymentStatus = async (req, res) => {
     const verification = await accountPeService.getPaymentStatus(token, transaction_id);
 
     if (verification?.data?.status === 'success' || verification?.data?.status === 'completed') {
-      
+
       // 2. PARSE DATA FROM REMARK (e.g., "SUB|basic|userId")
       const [type, id, value] = remark.split('|');
 

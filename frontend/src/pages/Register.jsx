@@ -156,7 +156,11 @@ const Register = () => {
             <input type="checkbox" required id="terms" checked={formData.termsAccepted} onChange={(e) => setFormData({ ...formData, termsAccepted: e.target.checked })} className="mt-1 w-5 h-5 accent-emerald-600 rounded cursor-pointer" />
             <label htmlFor="terms" className="text-[10px] font-bold text-slate-500 leading-relaxed cursor-pointer uppercase tracking-widest">I agree to the <span className="text-emerald-600 underline">Terms of Service</span> and <span className="text-emerald-600 underline">Privacy Policy</span>.</label>
           </div>
-
+          <div className="text-center mb-4">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              Review our <Link to="/teacher-guidelines" className="text-emerald-600 underline">Teacher Guidelines</Link> before joining.
+            </p>
+          </div>
           <button
             type="submit"
             className="w-full mt-8 bg-slate-900 text-white font-black py-5 rounded-[1.8rem] flex items-center justify-center gap-3 hover:bg-emerald-600 transition-all shadow-xl shadow-slate-900/10 active:scale-95 group uppercase tracking-[0.2em] text-[10px]"

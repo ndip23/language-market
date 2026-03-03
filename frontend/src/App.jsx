@@ -18,6 +18,9 @@ import Register from './pages/Register';
 import TeacherProfile from './pages/TeacherProfile'; // Public View
 import HowItWorks from './pages/HowItWorks';
 import Pricing from './pages/Pricing';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TeacherGuidelines from './pages/TeacherGuidelines';
 
 // --- STUDENT PORTAL PAGES ---
 import StudentOverview from './pages/student/Overview';
@@ -57,12 +60,12 @@ function App() {
     <AuthProvider>
       <Router>
         <ScrollToTop />
-        <Toaster 
-          position="top-center" 
+        <Toaster
+          position="top-center"
           toastOptions={{
             duration: 4000,
             style: { background: '#fff', color: '#0f172a', fontWeight: 'bold', borderRadius: '1.5rem', border: '1px solid #f1f5f9' }
-          }} 
+          }}
         />
 
         <Routes>
@@ -76,6 +79,9 @@ function App() {
             <Route path="/how-it-works" element={<HowItWorks />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/teacher/:id" element={<TeacherProfile />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/teacher-guidelines" element={<TeacherGuidelines />} />
           </Route>
 
 
@@ -113,7 +119,7 @@ function App() {
               ZONE 4: ADMIN & FALLBACK
           =========================================== */}
           <Route path="/admin" element={<AdminDashboard />} />
-          
+
           {/* Catch-all: Redirect to Home */}
           <Route path="*" element={<Navigate to="/" replace />} />
 
