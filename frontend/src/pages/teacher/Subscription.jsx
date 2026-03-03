@@ -2,14 +2,49 @@ import { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { Check, Zap, Crown, ShieldCheck, TrendingUp, Headphones, Globe } from 'lucide-react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate, useSearchParams } from 'react-router-dom'; // 🚨 Added useSearchParams
+import toast from 'react-hot-toast'; // 🚨 Added toast
 import { FullPageLoader } from '../../components/Loader';
 import { SUPPORTED_REGIONS } from '../../constants/regions';
 
 const TeacherSubscription = () => {
-  const { user, token } = useContext(AuthContext);
+  const { user, token, login } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams(); // 🚨 FIXED: Defined searchParams
+
+  // 🚨 WEBHOOK/VERIFICATION LOGIC
+  // This runs when the user is redirected back from Swychr with ?status=success
+  useEffect(() => {
+    const txnId = searchParams.get('transaction_id');
+    const status = searchParams.get('status');
+    const remark = searchParams.get('remark');
+
+    if (status === 'success' && txnId && remark) {
+      const verify = async () => {
+        const tid = toast.loading("Verifying your payment...");
+        try {
+          // Call our verification API to double-check with Swychr
+          const res = await axios.get(`/payments/verify/${txnId}?remark=${remark}`);
+          
+          if (res.data.success) {
+            toast.success("Subscription Active! Welcome abroad.", { id: tid });
+            
+            // Refresh user data in context to show the new limits and unlock the sidebar
+            // Assuming your backend /auth/update-me (GET) returns the current user
+            const updatedUser = await axios.get('/auth/update-me'); 
+            login(updatedUser.data, token); 
+            
+            // Clean the URL by moving to the main dashboard
+            navigate('/dashboard/teacher', { replace: true });
+          }
+        } catch (err) {
+          toast.error("Verification failed. Please refresh your browser.", { id: tid });
+        }
+      };
+      verify();
+    }
+  }, [searchParams, token, login, navigate]);
   
   // Identify user's region for price display
   const region = SUPPORTED_REGIONS.find(r => r.code === user?.countryCode) || SUPPORTED_REGIONS[0];
@@ -65,6 +100,7 @@ const TeacherSubscription = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-stretch">
+        
         {/* BASIC PLAN */}
         <div className={`flex flex-col p-10 rounded-[3.5rem] bg-white border border-slate-100 shadow-2xl relative transition-all hover:border-emerald-500/30 ${user?.subscription?.plan === 'basic' ? 'ring-4 ring-emerald-500/10' : ''}`}>
           <div className="mb-8">
@@ -72,7 +108,7 @@ const TeacherSubscription = () => {
             <h3 className="text-2xl font-black text-slate-900 mb-2 italic">Tutor Basic</h3>
             <div className="flex flex-col">
                 <div className="flex items-baseline space-x-1">
-                    <span className="text-5xl font-black text-slate-900">$5</span>
+                    <span className="text-5xl font-black text-slate-900">$0.50</span>
                     <span className="text-xs font-bold text-slate-300 uppercase tracking-widest">/ Month</span>
                 </div>
                 <p className="text-emerald-600 font-black text-[11px] uppercase tracking-tighter italic mt-1">Approx. {localPrices.basic} {region.currency}</p>
@@ -88,8 +124,8 @@ const TeacherSubscription = () => {
           </ul>
           <button 
             disabled={user?.subscription?.plan === 'basic'}
-            onClick={() => handleUpgrade('basic', 5)}
-            className={`w-full py-5 rounded-3xl font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-xl ${user?.subscription?.plan === 'basic' ? 'bg-slate-50 text-slate-300 cursor-not-allowed' : 'bg-slate-900 text-white hover:bg-emerald-600 active:scale-95 cursor-pointer'}`}
+            onClick={() => handleUpgrade('basic', 0.5)}
+            className={`w-full py-5 rounded-3xl font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-xl ${user?.subscription?.plan === 'basic' ? 'bg-slate-50 text-slate-300 cursor-not-allowed shadow-none' : 'bg-slate-900 text-white hover:bg-emerald-600 active:scale-95 cursor-pointer'}`}
           >
             {user?.subscription?.plan === 'basic' ? 'Current Active Plan' : 'Activate Basic'}
           </button>
@@ -120,7 +156,7 @@ const TeacherSubscription = () => {
           <button 
              disabled={user?.subscription?.plan === 'pro'}
              onClick={() => handleUpgrade('pro', 10)}
-             className={`w-full py-6 rounded-3xl font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-2xl ${user?.subscription?.plan === 'pro' ? 'bg-white/5 text-slate-500 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-500 active:scale-95 cursor-pointer'}`}
+             className={`w-full py-6 rounded-3xl font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-2xl ${user?.subscription?.plan === 'pro' ? 'bg-white/5 text-slate-500 cursor-not-allowed shadow-inner' : 'bg-emerald-600 text-white hover:bg-emerald-500 active:scale-95 cursor-pointer'}`}
           >
             {user?.subscription?.plan === 'pro' ? 'Current Active Plan' : 'Activate Pro Status'}
           </button>
@@ -144,4 +180,5 @@ const TeacherSubscription = () => {
     </div>
   );
 };
+
 export default TeacherSubscription;

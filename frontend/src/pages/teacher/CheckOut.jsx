@@ -16,7 +16,7 @@ const Checkout = () => {
   const [fetching, setFetching] = useState(true);
   const [processing, setProcessing] = useState(false);
 
-  const plan = state?.plan || { name: 'basic', amount: 5 };
+  const plan = state?.plan || { name: 'basic', amount: 0.5 };
   const region = SUPPORTED_REGIONS.find(r => r.code === user?.countryCode) || SUPPORTED_REGIONS[0];
 
   useEffect(() => {

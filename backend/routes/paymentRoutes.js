@@ -6,7 +6,8 @@ const {
     getExchangeRate, 
     payForLesson, 
     getMethodsByCountry, 
-    requestWithdrawal 
+    requestWithdrawal,
+    verifyPaymentStatus
 } = require('../controllers/paymentController');
 
 // --- PUBLIC/STUDENT ROUTES ---
@@ -17,5 +18,6 @@ router.post('/lesson', auth, payForLesson); // Student pays teacher
 router.post('/subscribe', auth, subscribeTeacher); // Teacher pays sub
 router.get('/methods', auth, getMethodsByCountry); // Get local banks/momo
 router.post('/withdraw', auth, requestWithdrawal); // Teacher takes money out
+router.get('/verify/:transaction_id', auth, verifyPaymentStatus);
 
 module.exports = router;
