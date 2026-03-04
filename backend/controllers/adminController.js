@@ -96,7 +96,20 @@ exports.toggleSuspension = async (req, res) => {
 exports.getAdminUsers = async (req, res) => {
   try {
     const teachers = await User.find({ role: 'teacher' }).select('-password');
-    const students = await User.find({ role: 'student' }).select('-password');
+    const rawStudents = await User.find({ role: 'student' }).select('-password');
+
+    // 🚨 ENHANCEMENT: For every student, find their teacher connections
+    const students = await Promise.all(rawStudents.map(async (student) => {
+        const connections = await Connection.find({ student: student._id })
+            .populate('teacher', 'name profilePicture teacherProfile')
+            .select('isPaid status teacher');
+        
+        return {
+            ...student._doc,
+            bookedTutors: connections // Attach the list of tutors they are working with
+        };
+    }));
+
     res.json({ teachers, students });
   } catch (err) {
     res.status(500).send('Server Error');
@@ -108,16 +121,25 @@ exports.getPlatformStats = async (req, res) => {
   try {
     const totalTeachers = await User.countDocuments({ role: 'teacher' });
     const totalStudents = await User.countDocuments({ role: 'student' });
-    
-    // Calculate total 15% commission from all connections
+
+    // 1. Calculate Lesson Commission Revenue (15%)
     const connections = await Connection.find({ isPaid: true });
-    const totalRevenue = connections.reduce((acc, curr) => acc + (curr.pricing?.platformCommission || 0), 0);
+    const commissionRevenue = connections.reduce((acc, curr) => acc + (curr.pricing?.platformCommission || 0), 0);
+
+    // 2. Calculate Subscription Revenue ($5 and $10)
+    // We count active teachers on each plan
+    const basicCount = await User.countDocuments({ 'subscription.plan': 'basic', 'subscription.status': 'active' });
+    const proCount = await User.countDocuments({ 'subscription.plan': 'pro', 'subscription.status': 'active' });
+    
+    const subscriptionRevenue = (basicCount * 5) + (proCount * 10);
 
     res.json({
       totalTeachers,
       totalStudents,
-      totalRevenue: totalRevenue.toFixed(2),
-      activeSubscriptions: await User.countDocuments({ 'subscription.status': 'active' })
+      commissionRevenue: commissionRevenue.toFixed(2),
+      subscriptionRevenue: subscriptionRevenue.toFixed(2),
+      totalRevenue: (commissionRevenue + subscriptionRevenue).toFixed(2),
+      activeSubscriptions: basicCount + proCount
     });
   } catch (err) {
     res.status(500).send('Server Error');
