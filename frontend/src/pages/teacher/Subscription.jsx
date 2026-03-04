@@ -2,8 +2,8 @@ import { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { Check, Zap, Crown, ShieldCheck, TrendingUp, Headphones, Globe } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom'; // 🚨 Added useSearchParams
-import toast from 'react-hot-toast'; // 🚨 Added toast
+import { useNavigate, useSearchParams } from 'react-router-dom'; 
+import toast from 'react-hot-toast';
 import { FullPageLoader } from '../../components/Loader';
 import { SUPPORTED_REGIONS } from '../../constants/regions';
 
@@ -13,46 +13,55 @@ const TeacherSubscription = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams(); 
 
-  // 🚨 WEBHOOK/VERIFICATION LOGIC
-  // This runs when the user is redirected back from Swychr with ?status=success
+  // 🚨 1. IMPROVED VERIFICATION LOGIC
   useEffect(() => {
-    const txnId = searchParams.get('transaction_id');
     const status = searchParams.get('status');
+    const txnId = searchParams.get('transaction_id');
     const remark = searchParams.get('remark');
 
-    if (status === 'success' && txnId && remark) {
+    if (status === 'success') {
       const verify = async () => {
-        const tid = toast.loading("Verifying your payment...");
+        const tid = toast.loading("Finalizing your elite access...");
         try {
-          // Call our verification API to double-check with Swychr
-          const res = await axios.get(`/payments/verify/${txnId}?remark=${remark}`);
+          // Fallback logic if Swychr strips data: 
+          // Use user._id (standard MongoDB) or user.id
+          const currentUserId = user?._id || user?.id;
+          const finalRemark = remark || `SUB|basic|${currentUserId}`;
+          const finalTxnId = txnId || 'LATEST';
+
+          // 🚨 THE FIX: encodeURIComponent ensures the pipes (|) don't break the URL
+          const res = await axios.get(`/payments/verify/${finalTxnId}?remark=${encodeURIComponent(finalRemark)}`);
           
           if (res.data.success) {
-            toast.success("Subscription Active! Welcome abroad.", { id: tid });
-            
-            // Refresh user data in context to show the new limits and unlock the sidebar
-            // Assuming your backend /auth/update-me (GET) returns the current user
-            const updatedUser = await axios.get('/auth/update-me'); 
+            // Fetch FRESH profile to get the new 'active' status and connection limits
+            const updatedUser = await axios.get('/auth/me'); 
             login(updatedUser.data, token); 
             
-            // Clean the URL by moving to the main dashboard
+            toast.success("Subscription Active! Welcome abroad.", { id: tid });
+            
+            // 🚨 THE FIX: Clean the URL immediately to prevent duplicate calls
             navigate('/dashboard/teacher', { replace: true });
           }
         } catch (err) {
-          toast.error("Verification failed. Please refresh your browser.", { id: tid });
+          console.error("Verification Error:", err);
+          // Don't show error immediately as the Webhook might still be processing
+          toast.error("Verification pending. Please refresh the page.", { id: tid });
         }
       };
-      verify();
+
+      // Only run verify if user data is loaded in context
+      if (user) verify();
     }
-  }, [searchParams, token, login, navigate]);
+  }, [searchParams, user, token, login, navigate]);
   
-  // Identify user's region for price display
+  // 🚨 2. RESPONSIVE PRICE DISPLAY LOGIC
   const region = SUPPORTED_REGIONS.find(r => r.code === user?.countryCode) || SUPPORTED_REGIONS[0];
   const [localPrices, setLocalPrices] = useState({ basic: '...', pro: '...' });
 
   useEffect(() => {
     const fetchRates = async () => {
       try {
+        // Correcting to 0.5 for the basic plan test
         const res5 = await axios.get(`/payments/rate?countryCode=${region.code}&amount=0.5`);
         const res10 = await axios.get(`/payments/rate?countryCode=${region.code}&amount=10`);
         
@@ -62,14 +71,13 @@ const TeacherSubscription = () => {
         });
       } catch (err) {
         console.error("Conversion failed");
-        setLocalPrices({ basic: '3,250', pro: '6,500' });
+        setLocalPrices({ basic: '325', pro: '6,500' });
       }
     };
     if (token && user?.countryCode) fetchRates();
   }, [region, token, user]);
 
   const handleUpgrade = (planName, price) => {
-      // Redirect to the Summary page with the selected plan details
       navigate('/dashboard/teacher/checkout', { 
           state: { plan: { name: planName, amount: price } } 
       });
