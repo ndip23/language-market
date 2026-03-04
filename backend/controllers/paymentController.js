@@ -62,7 +62,9 @@ exports.payForLesson = async (req, res) => {
 // 3. TEACHER SUBSCRIPTION ($5 or $10)
 exports.subscribeTeacher = async (req, res) => {
   const { plan, countryCode, mobile, currency } = req.body;
-  const usdAmount = plan === 'pro' ? 10 : 5;
+  
+  // 1. SET TEST PRICE: 0.5 for basic, 10 for pro
+  const usdAmount = plan === 'pro' ? 10 : 0.5;
 
   try {
     const user = await User.findById(req.user.id);
@@ -70,8 +72,10 @@ exports.subscribeTeacher = async (req, res) => {
     const localAmount = await accountPeService.getFiatRate(token, countryCode, usdAmount);
     const finalAmount = localAmount || Math.ceil(usdAmount * 650);
 
-    // 🚨 FIXED: Defined remark string
     const remarkData = `SUB|${plan}|${user._id}`;
+    
+    // 2. FIXED: Generate the ID ONCE so it matches in the payload and the redirect URL
+    const uniqueTxnId = `SUB${Date.now()}${user._id.toString().substring(0, 4)}`;
 
     const payload = {
       country_code: countryCode,
@@ -80,17 +84,19 @@ exports.subscribeTeacher = async (req, res) => {
       mobile: mobile,
       amount: finalAmount,
       currency: currency,
-      transaction_id: `SUB${Date.now()}${user._id.toString().substring(0, 4)}`,
+      transaction_id: uniqueTxnId, // Use variable here
       description: `Tutor Plan: ${plan.toUpperCase()}`,
       pass_digital_charge: true,
       remark: remarkData,
-      // 🚨 REDIRECT INCLUDES REMARK FOR FRONTEND VERIFICATION
-      redirect_url: `${process.env.CLIENT_URL}/dashboard/teacher/subscription?status=success&transaction_id=SUB${Date.now()}&remark=${encodeURIComponent(remarkData)}`,
+      // 3. FIXED: Using the same variable in the redirect URL
+      redirect_url: `${process.env.CLIENT_URL}/dashboard/teacher/subscription?status=success&transaction_id=${uniqueTxnId}&remark=${encodeURIComponent(remarkData)}`,
       callback_url: `${process.env.BACKEND_URL}/api/payments/webhook`
     };
+
     const result = await accountPeService.createLink(token, payload);
     res.json({ paymentUrl: result.data.payment_link });
   } catch (err) {
+    console.error("Initialization Error:", err.message);
     res.status(500).json({ msg: "Subscription initialization failed" });
   }
 };
