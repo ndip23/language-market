@@ -14,7 +14,7 @@ const Pricing = () => {
         {/* Left Card: Basic */}
         <div className="bg-white p-12 md:p-16 rounded-[3.5rem] shadow-xl border border-slate-100 flex flex-col h-full hover:-translate-y-2 transition-transform">
           <span className="text-emerald-600 font-black text-xs uppercase tracking-widest mb-6 block bg-emerald-50 w-fit px-4 py-1 rounded-full">Tutor Basic</span>
-          <div className="text-7xl font-black text-slate-900 mb-8">$0.5<span className="text-sm font-bold text-slate-300">/mo</span></div>
+          <div className="text-7xl font-black text-slate-900 mb-8">$5<span className="text-sm font-bold text-slate-300">/mo</span></div>
           
           <ul className="space-y-6 mb-12 flex-1">
             {[

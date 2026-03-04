@@ -64,7 +64,7 @@ exports.subscribeTeacher = async (req, res) => {
   const { plan, countryCode, mobile, currency } = req.body;
   
   // 1. SET TEST PRICE: 0.5 for basic, 10 for pro
-  const usdAmount = plan === 'pro' ? 10 : 0.5;
+  const usdAmount = plan === 'pro' ? 10 : 5;
 
   try {
     const user = await User.findById(req.user.id);
