@@ -124,7 +124,7 @@ const TeacherSubscription = () => {
           </ul>
           <button 
             disabled={user?.subscription?.plan === 'basic'}
-            onClick={() => handleUpgrade('basic', 5)}
+            onClick={() => handleUpgrade('basic', 0.5)}
             className={`w-full py-5 rounded-3xl font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-xl ${user?.subscription?.plan === 'basic' ? 'bg-slate-50 text-slate-300 cursor-not-allowed shadow-none' : 'bg-slate-900 text-white hover:bg-emerald-600 active:scale-95 cursor-pointer'}`}
           >
             {user?.subscription?.plan === 'basic' ? 'Current Active Plan' : 'Activate Basic'}
