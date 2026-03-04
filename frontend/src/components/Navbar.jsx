@@ -46,7 +46,7 @@ const Navbar = () => {
             {!user ? (
               <>
                 <Link to="/login" className="hidden md:block text-[10px] font-black uppercase tracking-widest text-slate-900 hover:text-emerald-600">Sign In</Link>
-                {/* 🚨 MOBILE-VISIBLE CTA */}
+                {/* 🚨 MOBILE-VISIBLE CTA// */}
                 <Link to="/register" className="bg-emerald-600 text-white px-5 py-2.5 md:px-8 md:py-3 rounded-full hover:bg-slate-900 shadow-xl shadow-emerald-500/20 transition-all active:scale-95 font-black uppercase tracking-widest text-[9px] md:text-[10px]">
                     Get Started
                 </Link>
@@ -88,7 +88,7 @@ const Navbar = () => {
                 </>
             ) : (
                 <Link to="/register" onClick={closeMenu} className="bg-emerald-600 text-white px-12 py-5 rounded-full shadow-2xl flex items-center uppercase text-[11px] font-black tracking-widest">
-                    Join Now <ArrowRight size={16} className="ml-2" />
+                    Get Started <ArrowRight size={16} className="ml-2" />
                 </Link>
             )}
         </div>
