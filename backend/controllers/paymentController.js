@@ -62,8 +62,6 @@ exports.payForLesson = async (req, res) => {
 // 3. TEACHER SUBSCRIPTION ($5 or $10)
 exports.subscribeTeacher = async (req, res) => {
   const { plan, countryCode, mobile, currency } = req.body;
-  
-  // 1. SET TEST PRICE: 0.5 for basic, 10 for pro
   const usdAmount = plan === 'pro' ? 10 : 5;
 
   try {
@@ -225,13 +223,14 @@ exports.verifyPaymentStatus = async (req, res) => {
             'subscription.plan': plan,
             'subscription.studentLimit': limit,
             'subscription.currentConnections': 0, // Reset for new plan
-            'subscription.status': 'active',
+            'subscription.status': 'pending_approval',
             'subscription.activeUntil': new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
           },
-          { new: true }
+          { new: true },
+          console.log(`✅ Verified: Teacher ${updatedUser.name} unlocked for ${plan} plan.`)
         );
         
-        console.log(`✅ Verified: Teacher ${updatedUser.name} unlocked for ${plan} plan.`);
+        return res.json({ success: true, msg: "Payment Verified. Awaiting Admin Review." });
       }
 
       // --- CASE B: LESSON PAYMENT (15% Split) ---

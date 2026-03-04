@@ -119,5 +119,5 @@ io.on('connection', (socket) => {
 // 14. Start Server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-    console.log(`🚀 Luxury Server Active on Port ${PORT}`);
+    console.log(`🚀 Server Active on Port ${PORT}`);
 });

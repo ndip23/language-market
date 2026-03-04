@@ -31,7 +31,11 @@ const userSchema = new mongoose.Schema({
     studentLimit: { type: Number, default: 0 }, // 6 or 20
     currentConnections: { type: Number, default: 0 },
     activeUntil: Date,
-    status: { type: String, default: 'inactive' }
+    status: {
+      type: String,
+      enum: ['none', 'pending_approval', 'active', 'inactive'],
+      default: 'none'
+    }
   }
 }, { timestamps: true });
 
