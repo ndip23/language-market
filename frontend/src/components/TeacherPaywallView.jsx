@@ -39,7 +39,7 @@ const TeacherPaywallView = ({ title, feature, benefit }) => {
             to="/dashboard/teacher/subscription"
             className="w-full bg-slate-900 text-white py-4 md:py-6 rounded-xl md:rounded-[1.8rem] font-black text-[10px] md:text-[11px] uppercase tracking-[0.1em] md:tracking-[0.2em] flex items-center justify-center hover:bg-emerald-600 transition-all shadow-xl shadow-slate-900/20 group active:scale-95 px-4"
           >
-            <span className="truncate">Activate Professional Access</span>
+            <span className="truncate">Activate Account</span>
             <ArrowRight size={16} className="ml-2 md:ml-3 group-hover:translate-x-1 transition-transform shrink-0" />
           </Link>
 

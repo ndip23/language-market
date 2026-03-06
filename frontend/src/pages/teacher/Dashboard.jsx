@@ -3,7 +3,7 @@ import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { 
   TrendingUp, Users, Star, DollarSign, 
-  ArrowUpRight, ShieldCheck, Wallet, Clock, Sparkles
+  ArrowUpRight, ShieldCheck, Wallet, Clock, Sparkles, X
 } from 'lucide-react';
 import TeacherPaywallView from '../../components/TeacherPaywallView';
 import toast from 'react-hot-toast';
@@ -21,7 +21,7 @@ const TeacherDashboard = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   // 🚨 LOGIC: Check both Plan and Status
-  const hasPaid = user?.subscription?.plan && user?.subscription?.plan !== 'none';
+  const hasPlan = user?.subscription?.plan && user?.subscription?.plan !== 'none';
   const isApproved = user?.subscription?.status === 'active';
 
   useEffect(() => {
