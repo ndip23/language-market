@@ -74,8 +74,8 @@ function App() {
               ZONE 1: PUBLIC PAGES (Navbar + Footer)
           =========================================== */}
           <Route element={<PublicLayout />}>
-            <Route path="/" element={<Landing />} />
-            <Route path="/explore" element={<Explore />} />
+            <Route path="/landing" element={<Landing />} />
+            <Route path="/" element={<Explore />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/how-it-works" element={<HowItWorks />} />

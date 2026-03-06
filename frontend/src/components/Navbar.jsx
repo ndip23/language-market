@@ -39,7 +39,7 @@ const Navbar = () => {
           <div className="flex items-center space-x-3 md:space-x-6">
             {/* DESKTOP LINKS */}
             <div className="hidden md:flex items-center space-x-10 text-[10px] font-black uppercase tracking-widest text-slate-500">
-              <Link to="/explore" className="hover:text-emerald-600 transition-colors">Find Tutors</Link>
+              <Link to="/" className="hover:text-emerald-600 transition-colors">Find Tutors</Link>
               <Link to="/how-it-works" className="hover:text-emerald-600 transition-colors">How it works</Link>
               <Link to="/pricing" className="hover:text-emerald-600 transition-colors">Pricing</Link>
               {!user && <Link to="/login" className="hover:text-emerald-600 transition-colors text-slate-900">Sign In</Link>}
@@ -80,7 +80,7 @@ const Navbar = () => {
         ${isOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}
       `}>
         <div className="flex flex-col items-center space-y-8 text-[11px] font-black uppercase tracking-[0.3em] text-slate-900">
-            <Link to="/explore" onClick={closeMenu}>Find Tutors</Link>
+            <Link to="/" onClick={closeMenu}>Find Tutors</Link>
             <Link to="/how-it-works" onClick={closeMenu}>How it works</Link>
             <Link to="/pricing" onClick={closeMenu}>Pricing</Link>
             
