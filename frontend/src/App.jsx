@@ -12,7 +12,7 @@ import StudentLayout from './layouts/StudentLayout';
 import TeacherLayout from './layouts/TeacherLayout';
 
 // --- PUBLIC PAGES ---
-import Home from './pages/Home';
+import Explore from './pages/Explore';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import TeacherProfile from './pages/TeacherProfile'; // Public View
@@ -21,6 +21,7 @@ import Pricing from './pages/Pricing';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TeacherGuidelines from './pages/TeacherGuidelines';
+import Landing from './pages/Landing';
 
 // --- STUDENT PORTAL PAGES ---
 import StudentOverview from './pages/student/Overview';
@@ -73,7 +74,8 @@ function App() {
               ZONE 1: PUBLIC PAGES (Navbar + Footer)
           =========================================== */}
           <Route element={<PublicLayout />}>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Landing />} />
+            <Route path="/explore" element={<Explore />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/how-it-works" element={<HowItWorks />} />

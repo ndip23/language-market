@@ -7,8 +7,10 @@ import {
 import { Link } from 'react-router-dom';
 import { Loader } from '../components/Loader';
 import toast from 'react-hot-toast';
+import TeacherDiscovery from '../components/TeacherDiscovery';
+import TrustFAQ from '../components/TrustFAQ';
 
-const Home = () => {
+const Explore = () => {
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ language: '', maxPrice: '' });
@@ -85,6 +87,9 @@ const Home = () => {
       </section>
 
       {/* TUTOR GRID */}
+      <div className=" mb-16">
+          <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter italic">Available <span className="text-emerald-600">Tutors</span></h2>
+        </div>
       <section className="py-20 bg-slate-50 px-6">
         <div className="max-w-7xl mx-auto">
           {loading ? <Loader /> : (
@@ -106,8 +111,10 @@ const Home = () => {
           )}
         </div>
       </section>
+      <TeacherDiscovery />
+        <TrustFAQ />
     </div>
   );
 };
 
-export default Home;
+export default Explore;

@@ -8,6 +8,8 @@ import {
 import TeacherPaywallView from '../../components/TeacherPaywallView';
 import toast from 'react-hot-toast';
 import { Loader, FullPageLoader } from '../../components/Loader';
+import TeacherDiscovery from '../../components/TeacherDiscovery';
+import TrustFAQ from '../../components/TrustFAQ';
 
 const TeacherDashboard = () => {
   const { user, token, login } = useContext(AuthContext);
@@ -59,13 +61,17 @@ const TeacherDashboard = () => {
   };
 
   // 1. IF NO PAYMENT AT ALL: Show Activation Hook
-  if (!hasPaid) return (
+  if (!hasPlan) return (
+  <div className="space-y-12">
     <TeacherPaywallView 
       title="Ready to track your" 
       feature="Earnings & Growth" 
       benefit="Activate your professional plan to unlock real-time revenue analytics, student management, and instant payouts." 
     />
-  );
+    <TeacherDiscovery />
+    <TrustFAQ />
+  </div>
+);
 
   // 2. 🚨 IF PAID BUT NOT APPROVED: Show Reviewing Screen
   if (hasPaid && !isApproved) return (

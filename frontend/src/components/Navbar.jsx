@@ -1,13 +1,14 @@
 import { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom'; // 🚨 Added useLocation
 import { AuthContext } from '../context/AuthContext';
-import { Globe, Menu, X, UserCircle, ArrowRight } from 'lucide-react';
+import { Globe, Menu, X, UserCircle, ArrowRight, LogIn } from 'lucide-react';
 import Logo from './Logo';
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation(); // 🚨 Logic to check current path
 
   const getPortalLink = () => {
     if (!user) return "/login";
@@ -35,21 +36,23 @@ const Navbar = () => {
             <span className="text-xl font-black tracking-tighter text-slate-900 uppercase">LangConnect<span className="text-emerald-500">.</span></span>
           </Link>
 
-          {/* DESKTOP LINKS (Hidden on Mobile) */}
-          <div className="hidden md:flex items-center space-x-10 text-[10px] font-black uppercase tracking-widest text-slate-500">
-            <Link to="/" className="hover:text-emerald-600 transition-colors">Find Tutors</Link>
-            <Link to="/how-it-works" className="hover:text-emerald-600 transition-colors">How it works</Link>
-            <Link to="/pricing" className="hover:text-emerald-600 transition-colors">Pricing</Link>
-          </div>
-
           <div className="flex items-center space-x-3 md:space-x-6">
+            {/* DESKTOP LINKS */}
+            <div className="hidden md:flex items-center space-x-10 text-[10px] font-black uppercase tracking-widest text-slate-500">
+              <Link to="/explore" className="hover:text-emerald-600 transition-colors">Find Tutors</Link>
+              <Link to="/how-it-works" className="hover:text-emerald-600 transition-colors">How it works</Link>
+              <Link to="/pricing" className="hover:text-emerald-600 transition-colors">Pricing</Link>
+              {!user && <Link to="/login" className="hover:text-emerald-600 transition-colors text-slate-900">Sign In</Link>}
+            </div>
+
             {!user ? (
               <>
-                <Link to="/login" className="hidden md:block text-[10px] font-black uppercase tracking-widest text-slate-900 hover:text-emerald-600">Sign In</Link>
-                {/* 🚨 MOBILE-VISIBLE CTA// */}
-                <Link to="/register" className="bg-emerald-600 text-white px-5 py-2.5 md:px-8 md:py-3 rounded-full hover:bg-slate-900 shadow-xl shadow-emerald-500/20 transition-all active:scale-95 font-black uppercase tracking-widest text-[9px] md:text-[10px]">
-                    Get Started
-                </Link>
+                {/* 🚨 MOBILE-VISIBLE CTA - Hides if already on register page */}
+                {location.pathname !== '/register' && (
+                    <Link to="/register" className="bg-emerald-600 text-white px-5 py-2.5 md:px-8 md:py-3 rounded-full hover:bg-slate-900 shadow-xl shadow-emerald-500/20 transition-all active:scale-95 font-black uppercase tracking-widest text-[9px] md:text-[10px]">
+                        Get Started
+                    </Link>
+                )}
               </>
             ) : (
               <div className="flex items-center space-x-4 md:space-x-6">
@@ -77,19 +80,24 @@ const Navbar = () => {
         ${isOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}
       `}>
         <div className="flex flex-col items-center space-y-8 text-[11px] font-black uppercase tracking-[0.3em] text-slate-900">
-            <Link to="/" onClick={closeMenu} className="hover:text-emerald-600">Find Tutors</Link>
-            <Link to="/how-it-works" onClick={closeMenu} className="hover:text-emerald-600">How it works</Link>
-            <Link to="/pricing" onClick={closeMenu} className="hover:text-emerald-600">Pricing</Link>
+            <Link to="/explore" onClick={closeMenu}>Find Tutors</Link>
+            <Link to="/how-it-works" onClick={closeMenu}>How it works</Link>
+            <Link to="/pricing" onClick={closeMenu}>Pricing</Link>
             
+            <div className="h-px bg-slate-100 w-20"></div>
+
             {user ? (
                 <>
-                    <Link to={getPortalLink()} onClick={closeMenu} className="text-emerald-600 flex items-center"><UserCircle size={18} className="mr-2"/> Go to Portal</Link>
-                    <button onClick={handleLogout} className="text-red-500">Sign Out</button>
+                    <Link to={getPortalLink()} onClick={closeMenu} className="text-emerald-600 flex items-center font-black uppercase"><UserCircle size={18} className="mr-2"/> Go to Portal</Link>
+                    <button onClick={handleLogout} className="text-red-500 font-black uppercase">Sign Out</button>
                 </>
             ) : (
-                <Link to="/register" onClick={closeMenu} className="bg-emerald-600 text-white px-12 py-5 rounded-full shadow-2xl flex items-center uppercase text-[11px] font-black tracking-widest">
-                    Get Started <ArrowRight size={16} className="ml-2" />
-                </Link>
+                <>
+                    <Link to="/login" onClick={closeMenu} className="flex items-center text-slate-400 font-black uppercase"><LogIn size={16} className="mr-2"/> Sign In</Link>
+                    <Link to="/register" onClick={closeMenu} className="bg-emerald-600 text-white px-12 py-5 rounded-full shadow-2xl flex items-center uppercase text-[11px] font-black tracking-widest">
+                        Get Started <ArrowRight size={16} className="ml-2" />
+                    </Link>
+                </>
             )}
         </div>
       </div>
