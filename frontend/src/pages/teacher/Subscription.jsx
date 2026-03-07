@@ -62,7 +62,7 @@ const TeacherSubscription = () => {
     const fetchRates = async () => {
       try {
         // Correcting to 0.5 for the basic plan test
-        const res5 = await axios.get(`/payments/rate?countryCode=${region.code}&amount=3`);
+        const res5 = await axios.get(`/payments/rate?countryCode=${region.code}&amount=5`);
         const res10 = await axios.get(`/payments/rate?countryCode=${region.code}&amount=10`);
         
         setLocalPrices({
@@ -116,7 +116,7 @@ const TeacherSubscription = () => {
             <h3 className="text-2xl font-black text-slate-900 mb-2 italic">Tutor Basic</h3>
             <div className="flex flex-col">
                 <div className="flex items-baseline space-x-1">
-                    <span className="text-5xl font-black text-slate-900">$3</span>
+                    <span className="text-5xl font-black text-slate-900">$5</span>
                     <span className="text-xs font-bold text-slate-300 uppercase tracking-widest">/ Month</span>
                 </div>
                 <p className="text-emerald-600 font-black text-[11px] uppercase tracking-tighter italic mt-1">Approx. {localPrices.basic} {region.currency}</p>

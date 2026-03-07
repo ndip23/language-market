@@ -62,7 +62,7 @@ exports.payForLesson = async (req, res) => {
 // 3. TEACHER SUBSCRIPTION ($5 or $10)
 exports.subscribeTeacher = async (req, res) => {
   const { plan, countryCode, mobile, currency } = req.body;
-  const usdAmount = plan === 'pro' ? 10 : 3;
+  const usdAmount = plan === 'pro' ? 10 : 5;
 
   try {
     const user = await User.findById(req.user.id);

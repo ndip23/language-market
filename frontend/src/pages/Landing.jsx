@@ -29,14 +29,14 @@ const Landing = () => {
                 <div className="absolute top-0 right-0 bg-emerald-600 text-white px-6 py-1.5 font-black text-[9px] uppercase tracking-widest rounded-bl-2xl">Special Offer</div>
                 <p className="text-[10px] font-black text-emerald-700 uppercase tracking-widest mb-2 italic">Special Introductory Offer</p>
                 <div className="flex items-baseline space-x-2 mb-2">
-                    <span className="text-5xl font-black text-slate-900">$3</span>
+                    <span className="text-5xl font-black text-slate-900">$5</span>
                     <span className="text-slate-400 font-bold text-sm italic">for your first 30 days</span>
                 </div>
                 <p className="text-slate-500 text-xs font-medium italic">Then $20/month after. No long-term commitment. Cancel anytime.</p>
             </div>
 
             <Link to="/register" className="inline-flex bg-slate-900 text-white px-10 py-5 rounded-full font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl hover:bg-emerald-600 transition-all items-center group active:scale-95">
-              Start Promotion for $3 <ArrowRight size={18} className="ml-3 group-hover:translate-x-2 transition-transform" />
+              Start Promotion for $5 <ArrowRight size={18} className="ml-3 group-hover:translate-x-2 transition-transform" />
             </Link>
           </div>
 
@@ -137,7 +137,7 @@ const Landing = () => {
                     <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-8 mt-8">
                         <p className="text-emerald-400 font-black text-[10px] uppercase tracking-[0.3em] mb-3">Today's Introductory Offer</p>
                         <div className="flex items-baseline space-x-3 mb-2">
-                            <span className="text-6xl font-black text-white italic tracking-tighter">$3</span>
+                            <span className="text-6xl font-black text-white italic tracking-tighter">$5</span>
                             <span className="text-slate-400 font-bold text-lg uppercase tracking-widest">First 30 Days</span>
                         </div>
                         <p className="text-slate-500 text-sm font-medium italic">Then $20/month after the first month</p>
@@ -153,16 +153,16 @@ const Landing = () => {
                 </ul>
 
                 <Link to="/register" className="w-full block bg-white text-slate-900 text-center py-6 rounded-3xl font-black uppercase text-xs tracking-[0.3em] hover:bg-emerald-600 hover:text-white transition-all shadow-xl">
-                    Start for $3
+                    Start for $5
                 </Link>
             </div>
         </div>
       </section>
 
-      {/* 6. TRY FOR $3 SECTION */}
+      {/* 6. TRY FOR $5 SECTION */}
       <section className="py-24 px-6 max-w-4xl mx-auto text-center lg:text-left">
-        <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter italic mb-10 leading-tight">Try the Service for Just <span className="text-emerald-600 underline decoration-emerald-200">$3</span></h2>
-        <p className="text-slate-500 font-medium text-lg leading-relaxed mb-10 italic">We understand that many teachers prefer to try a service before committing. Instead of paying the full $20 monthly membership, you can start with just $3 for your first 30 days.</p>
+        <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter italic mb-10 leading-tight">Try the Service for Just <span className="text-emerald-600 underline decoration-emerald-200">$5</span></h2>
+        <p className="text-slate-500 font-medium text-lg leading-relaxed mb-10 italic">We understand that many teachers prefer to try a service before committing. Instead of paying the full $20 monthly membership, you can start with just $5 for your first 30 days.</p>
         
         <div className="space-y-6 mb-12 flex flex-col items-center lg:items-start">
             {[
@@ -195,7 +195,7 @@ const Landing = () => {
 
       {/* 🚨 Description: Balanced text size and padding for mobile */}
       <p className="text-slate-400 text-sm md:text-xl font-medium max-w-2xl mx-auto mb-10 md:mb-14 italic leading-relaxed px-2">
-        If you want more students discovering your teaching profile, the first step is getting your profile promoted. Join today and try the service for just $3.
+        If you want more students discovering your teaching profile, the first step is getting your profile promoted. Join today and try the service for just $5.
       </p>
 
       {/* 🚨 Button: Scaled padding for easier thumb-tapping on mobile */}
@@ -203,7 +203,7 @@ const Landing = () => {
         to="/register" 
         className="inline-block bg-amber-500 text-slate-900 px-8 md:px-12 py-4 md:py-6 rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-[0.2em] shadow-xl shadow-amber-500/20 hover:bg-white hover:text-emerald-600 transition-all transform hover:scale-105 active:scale-95 mb-10 md:mb-14"
       >
-        Join Now for $3
+        Join Now for $5
       </Link>
 
       {/* 🚨 The Checklist Row: Fixed for mobile wrapping */}
