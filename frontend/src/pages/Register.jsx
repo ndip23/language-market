@@ -130,7 +130,7 @@ const Register = () => {
               ].map((r, i) => (
                 <div key={i} className="flex space-x-4 items-start">
                   <div className="bg-emerald-50 text-emerald-600 p-2.5 rounded-xl shrink-0 shadow-sm">{r.icon}</div>
-                  <div><h4 className="font-black text-slate-900 text-[10px] uppercase tracking-widest mb-0.5">{r.t}</h4><p className="text-slate-500 text-xs font-medium leading-relaxed italic">{r.c}</p></div>
+                  <div><h4 className="font-black text-slate-900 text-[10px] uppercase tracking-widest mb-0.5">{r.title}</h4><p className="text-slate-500 text-xs font-medium leading-relaxed italic">{r.content}</p></div>
                 </div>
               ))}
             </div>
