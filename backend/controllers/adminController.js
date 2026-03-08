@@ -46,7 +46,7 @@ exports.updateTeacherStatus = async (req, res) => {
                     </a>
 
                     <p style="text-align: center; font-size: 10px; color: #94a3b8; margin-top: 30px; text-transform: uppercase; letter-spacing: 1px;">
-                        © 2026 LangConnect Elite Marketplace
+                        © 2016 LangConnect Elite Marketplace
                     </p>
                 </div>
             </div>

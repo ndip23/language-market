@@ -71,7 +71,7 @@ const Footer = () => {
       {/* Bottom Bar */}
       <div className="max-w-7xl mx-auto border-t border-slate-50 pt-12 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
         <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">
-          © {new Date().getFullYear()} LangConnect Marketplace. All Rights Reserved.
+          © 2016 LangConnect Marketplace. All Rights Reserved.
         </p>
         <div className="flex space-x-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
           <span>English</span>

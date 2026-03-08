@@ -32,7 +32,7 @@ const Landing = () => {
                     <span className="text-5xl font-black text-slate-900">$5</span>
                     <span className="text-slate-400 font-bold text-sm italic">for your first 30 days</span>
                 </div>
-                <p className="text-slate-500 text-xs font-medium italic">Then $20/month after. No long-term commitment. Cancel anytime.</p>
+                <p className="text-slate-500 text-xs font-medium italic">Then $50/month after. No long-term commitment. Cancel anytime.</p>
             </div>
 
             <Link to="/register" className="inline-flex bg-slate-900 text-white px-10 py-5 rounded-full font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl hover:bg-emerald-600 transition-all items-center group active:scale-95">
@@ -133,14 +133,14 @@ const Landing = () => {
                 <div className="absolute top-0 right-0 bg-emerald-500 text-white px-12 py-4 font-black text-xs uppercase tracking-widest rounded-bl-[3rem]">Start Trial</div>
                 
                 <div className="mb-12">
-                    <h3 className="text-6xl font-black text-white italic mb-2">$20<span className="text-lg text-slate-500"> / mo</span></h3>
+                    <h3 className="text-6xl font-black text-white italic mb-2">$50<span className="text-lg text-slate-500"> / mo</span></h3>
                     <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-8 mt-8">
                         <p className="text-emerald-400 font-black text-[10px] uppercase tracking-[0.3em] mb-3">Today's Introductory Offer</p>
                         <div className="flex items-baseline space-x-3 mb-2">
                             <span className="text-6xl font-black text-white italic tracking-tighter">$5</span>
                             <span className="text-slate-400 font-bold text-lg uppercase tracking-widest">First 30 Days</span>
                         </div>
-                        <p className="text-slate-500 text-sm font-medium italic">Then $20/month after the first month</p>
+                        <p className="text-slate-500 text-sm font-medium italic">Then $50/month after the first month</p>
                     </div>
                 </div>
 
@@ -162,7 +162,7 @@ const Landing = () => {
       {/* 6. TRY FOR $5 SECTION */}
       <section className="py-24 px-6 max-w-4xl mx-auto text-center lg:text-left">
         <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter italic mb-10 leading-tight">Try the Service for Just <span className="text-emerald-600 underline decoration-emerald-200">$5</span></h2>
-        <p className="text-slate-500 font-medium text-lg leading-relaxed mb-10 italic">We understand that many teachers prefer to try a service before committing. Instead of paying the full $20 monthly membership, you can start with just $5 for your first 30 days.</p>
+        <p className="text-slate-500 font-medium text-lg leading-relaxed mb-10 italic">We understand that many teachers prefer to try a service before committing. Instead of paying the full $50 monthly membership, you can start with just $5 for your first 30 days.</p>
         
         <div className="space-y-6 mb-12 flex flex-col items-center lg:items-start">
             {[
@@ -176,7 +176,7 @@ const Landing = () => {
                 </div>
             ))}
         </div>
-        <p className="text-slate-400 font-medium italic">If you like the service, your membership continues at $20/month. If not, you can cancel anytime before renewal. No hidden charges.</p>
+        <p className="text-slate-400 font-medium italic">If you like the service, your membership continues at $50/month. If not, you can cancel anytime before renewal. No hidden charges.</p>
       </section>
 
       {/* 🚨 7. THE MASTER CTA SECTION (BOSS REQUIREMENT) */}
