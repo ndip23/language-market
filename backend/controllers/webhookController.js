@@ -8,84 +8,95 @@ const { login, getPaymentStatus } = require('../services/accountPeService');
  * @access  Public (Called by Swychr Server)
  */
 exports.handleSwychrWebhook = async (req, res) => {
+
   const { status, remark, transaction_id } = req.body;
 
-  // 1. Initial Status Check
   if (status !== 'success' && status !== 'completed') {
-    return res.status(200).send("OK"); // We acknowledge even failed ones to stop retries
+    return res.status(200).send("OK");
   }
 
   try {
-    // 2. 🛡️ SECURITY VERIFICATION (Anti-Hacker Shield)
-    // We don't trust the POST body. We call AccountPe ourselves to verify this transaction.
+
+    // SECURITY VERIFICATION
     const apiToken = await login();
     const verification = await getPaymentStatus(apiToken, transaction_id);
 
-    // Check if Swychr says this specific transaction_id is truly successful
     if (verification?.data?.status !== 'success' && verification?.data?.status !== 'completed') {
-        console.error("🚨 FRAUD ATTEMPT DETECTED: Webhook status mismatch for TXN:", transaction_id);
+        console.error("🚨 FRAUD ATTEMPT DETECTED:", transaction_id);
         return res.status(403).send("Transaction verification failed");
     }
 
-    // 3. PARSE THE REMARK DATA
-    // Format sent from Frontend: "SUB|plan|userId" OR "LESSON|connectionId|amount"
+    // PARSE REMARK
     const parts = remark.split('|');
     const type = parts[0];
 
     // ==========================================
-    // CASE A: TEACHER SUBSCRIPTION UPGRADE ($5/$10)
+    // CASE A: TEACHER SUBSCRIPTION
     // ==========================================
     if (type === 'SUB') {
-      const plan = parts[1]; // 'basic' or 'pro'
+
+      const plan = parts[1];
       const userId = parts[2];
       const limit = plan === 'pro' ? 20 : 6;
 
       await User.findByIdAndUpdate(userId, {
+
         'subscription.plan': plan,
         'subscription.studentLimit': limit,
-        'subscription.currentConnections': 0, // 🚨 RESET student count to 0
+        'subscription.currentConnections': 0,
         'subscription.status': 'active',
-        'subscription.activeUntil': new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // +30 days
+
+        // ✅ ADDED subscription timestamp
+        'subscription.subscribedAt': new Date(),
+
+        'subscription.activeUntil': new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+
       });
 
       console.log(`✅ Subscription Activated: ${plan} for User ${userId}`);
     }
 
     // ==========================================
-    // CASE B: STUDENT LESSON PAYMENT (15% Split)
+    // CASE B: LESSON PAYMENT
     // ==========================================
     if (type === 'LESSON') {
+
       const connectionId = parts[1];
       const grossAmount = Number(parts[2]);
 
-      // Calculate the platform's share and teacher's share
-      const commission = grossAmount * 0.15; // 15% for the platform
-      const netEarnings = grossAmount - commission; // 85% for the tutor
+      const commission = grossAmount * 0.15;
+      const netEarnings = grossAmount - commission;
 
-      // Update the Connection status
       const connection = await Connection.findByIdAndUpdate(connectionId, {
+
         isPaid: true,
+
+        // ✅ ADDED lesson payment timestamp
+        paidAt: new Date(),
+
         status: 'accepted',
+
         'pricing.grossAmount': grossAmount,
         'pricing.platformCommission': commission,
         'pricing.teacherEarnings': netEarnings
+
       });
 
-      // 💰 IMPORTANT: Update the Teacher's Wallet Balance
       if (connection) {
+
         await User.findByIdAndUpdate(connection.teacher, {
-          $inc: { balance: netEarnings } // Add the 85% to their withdrawable balance
+          $inc: { balance: netEarnings }
         });
+
         console.log(`✅ Lesson Split: Platform +${commission}, Teacher Wallet +${netEarnings}`);
       }
     }
 
   } catch (err) {
+
     console.error("WEBHOOK PROCESSING ERROR:", err.message);
-    // We still send 200 to Swychr so they stop sending the request, 
-    // but we log the error internally.
+
   }
 
-  // Always respond with 200 OK to AccountPe
   res.status(200).send("OK");
 };
