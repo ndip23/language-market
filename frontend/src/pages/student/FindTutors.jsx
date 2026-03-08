@@ -37,7 +37,7 @@ const FindTutors = () => {
             <div key={t._id} className="bg-white border border-slate-100 rounded-[2.5rem] p-5 shadow-sm hover:shadow-2xl transition-all group relative">
                <div className="relative overflow-hidden rounded-[2rem] mb-6">
                   <img src={t.profilePicture || 'https://images.unsplash.com/photo-1544717305-2782549b5136'} className="w-full h-56 md:h-64 object-cover group-hover:scale-110 transition-transform duration-1000" alt=""/>
-                  <div className="absolute bottom-4 left-4 bg-white/95 px-4 py-2 rounded-xl font-black text-emerald-600 shadow-xl text-xs">${t.teacherProfile.pricePerLesson}/hr</div>
+                  <div className="absolute bottom-4 left-4 bg-white/95 px-4 py-2 rounded-xl font-black text-emerald-600 shadow-xl text-xs">${t.teacherProfile.pricePerLesson}/lesson</div>
                </div>
                <h3 className="text-xl font-black text-slate-900 mb-1">{t.name}</h3>
                <div className="flex items-center justify-between mb-6">

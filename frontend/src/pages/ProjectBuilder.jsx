@@ -16,7 +16,7 @@ const ProfileBuilder = () => (
       {/* Grid for Price and Language */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
-          <label className="block text-slate-900 font-black text-sm uppercase tracking-widest mb-4">Lesson Price ($/hr)</label>
+          <label className="block text-slate-900 font-black text-sm uppercase tracking-widest mb-4">Lesson Price ($/lesson)</label>
           <input 
             type="number" placeholder="e.g. 45"
             className="w-full bg-slate-50 border border-slate-100 rounded-[1.5rem] px-8 py-5 text-slate-900 placeholder-slate-400 font-bold outline-none focus:border-emerald-500 shadow-inner"

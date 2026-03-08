@@ -98,7 +98,7 @@ const Explore = () => {
                 <div key={t._id} className="bg-white border border-slate-100 rounded-[3rem] p-6 shadow-sm hover:shadow-2xl transition-all duration-500 group relative">
                    <div className="relative overflow-hidden rounded-[2.5rem] mb-6">
                       <img src={t.profilePicture || 'https://images.unsplash.com/photo-1544717305-2782549b5136'} className="w-full h-72 md:h-80 object-cover group-hover:scale-110 transition-transform duration-1000" />
-                      <div className="absolute bottom-6 left-6 bg-white/95 px-5 py-2 rounded-2xl font-black text-emerald-600 shadow-xl">${t.teacherProfile.pricePerLesson}/hr</div>
+                      <div className="absolute bottom-6 left-6 bg-white/95 px-5 py-2 rounded-2xl font-black text-emerald-600 shadow-xl">${t.teacherProfile.pricePerLesson}/lesson</div>
                    </div>
                    <h3 className="text-3xl font-black text-slate-900 mb-2">{t.name}</h3>
                    <p className="text-emerald-600 font-black uppercase tracking-widest text-[9px] mb-8 italic">{t.teacherProfile.language} Specialist</p>
