@@ -52,11 +52,17 @@ const Footer = () => {
           <h4 className="text-slate-900 font-black text-xs uppercase tracking-[0.2em] mb-8">Contact Us</h4>
           <div className="space-y-4">
             <div className="flex items-center text-slate-500 text-sm font-bold italic">
-              <Mail size={16} className="text-emerald-600 mr-3" /> hello@langconnect.com
+              <Mail size={16} className="text-emerald-600 mr-3" /> kanyuymarketing31@gmail.com
             </div>
-            <div className="flex items-center text-slate-500 text-sm font-bold italic">
-              <Phone size={16} className="text-emerald-600 mr-3" /> +1 (800) 555-9765
-            </div>
+            <a
+              href="https://wa.me/237652301511?text=Hello%2C%20I'm%20an%20independent%20teacher%20interested%20in%20joining%20the%20platform.%20Can%20you%20guide%20me%3F"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center text-slate-500 text-sm font-bold italic hover:text-emerald-600 transition-all group cursor-pointer"
+            >
+              <Phone size={16} className="text-emerald-600 mr-3 group-hover:scale-110 transition-transform" />
+              <span>+237 652-301-511</span>
+            </a>
             <div className="pt-6">
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Certified Language Platform</p>
               <div className="h-10 w-32 bg-slate-100 rounded-lg flex items-center justify-center grayscale opacity-50">
