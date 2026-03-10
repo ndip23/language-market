@@ -30,6 +30,7 @@ const userSchema = new mongoose.Schema({
     stripeSubscriptionId: String,
     studentLimit: { type: Number, default: 0 }, // 6 or 20
     currentConnections: { type: Number, default: 0 },
+     subscribedAt: { type: Date },
     activeUntil: Date,
     status: {
       type: String,

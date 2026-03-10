@@ -92,7 +92,7 @@ const Checkout = () => {
             className="w-full bg-slate-900 text-white py-5 md:py-6 rounded-xl md:rounded-[1.8rem] font-black text-[10px] md:text-[11px] uppercase tracking-[0.15em] md:tracking-[0.2em] shadow-xl hover:bg-emerald-600 transition-all flex items-center justify-center active:scale-95 cursor-pointer disabled:opacity-50"
         >
             <CreditCard size={18} className="mr-3 shrink-0" /> 
-            <span className="truncate">Confirm & Pay — {fetching ? '...' : localAmount.toLocaleString()} {region.currency}</span>
+            <span className="truncate">Pay Now — {fetching ? '...' : localAmount.toLocaleString()} {region.currency}</span>
         </button>
 
         <div className="flex items-center justify-center space-x-3 opacity-50 px-2 text-center">

@@ -36,7 +36,7 @@ const Landing = () => {
             </div>
 
             <Link to="/register" className="inline-flex bg-slate-900 text-white px-10 py-5 rounded-full font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl hover:bg-emerald-600 transition-all items-center group active:scale-95">
-              Start Promotion for $5 <ArrowRight size={18} className="ml-3 group-hover:translate-x-2 transition-transform" />
+              Get started for $5 <ArrowRight size={18} className="ml-3 group-hover:translate-x-2 transition-transform" />
             </Link>
           </div>
 

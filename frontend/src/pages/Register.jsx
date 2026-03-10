@@ -14,11 +14,12 @@ import { SUPPORTED_REGIONS } from '../constants/regions';
 const Register = () => {
   const [formData, setFormData] = useState({
     name: '', email: '', mobile: '', countryCode: 'CM',
-    password: '', confirmPassword: '', role: 'student',
+    password: '', confirmPassword: '', 
+    role: 'teacher', // 🚨 FIXED: Default to teacher for the campaign
     language: 'English', pricePerLesson: '', termsAccepted: false
   });
 
-  const [showRules, setShowRules] = useState(false); // 🚨 State for Rules Gate
+  const [showRules, setShowRules] = useState(false); 
   const [showP, setShowP] = useState(false);
   const [showCP, setShowCP] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -28,20 +29,15 @@ const Register = () => {
 
   const selectedRegion = SUPPORTED_REGIONS.find(r => r.code === formData.countryCode) || SUPPORTED_REGIONS[0];
 
-  // 🚨 Handle button click (Intercepts Teacher registration to show rules)
   const handlePreSubmit = (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) return toast.error("Passwords do not match");
     if (!formData.termsAccepted) return toast.error("Please accept the Terms & Conditions");
 
-    if (formData.role === 'teacher') {
-      setShowRules(true);
-    } else {
-      executeRegister();
-    }
+    // Since role is locked to teacher, always show rules
+    setShowRules(true);
   };
 
-  // 🚨 Actual creation logic
   const executeRegister = async () => {
     setLoading(true);
     setShowRules(false);
@@ -54,16 +50,8 @@ const Register = () => {
       const res = await axios.post('/auth/register', payload);
       login(res.data.user, res.data.token);
 
-      const returnTo = location.state?.returnTo;
-      const tutorData = location.state?.selectedTutor;
-
-      if (returnTo && tutorData) {
-        toast.success(`Opening chat with ${tutorData.name}`, { id: tid });
-        navigate(returnTo, { state: { selectedTutor: tutorData } });
-      } else {
-        toast.success('Welcome to LangConnect!', { id: tid });
-        navigate(formData.role === 'teacher' ? '/dashboard/teacher' : '/dashboard/student');
-      }
+      toast.success('Welcome to the Elite Tutors!', { id: tid });
+      navigate('/dashboard/teacher');
     } catch (err) {
       toast.error(err.response?.data?.msg || 'Registration failed', { id: tid });
     } finally {
@@ -75,7 +63,7 @@ const Register = () => {
     <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-24 md:py-32">
       {loading && <FullPageLoader message="Verifying Identity..." />}
 
-      {/* 🚨 TEACHER RULES MODAL */}
+      {/* TEACHER RULES MODAL (Same as before) */}
       {showRules && (
         <div className="fixed inset-0 z-[1000] bg-slate-900/60 backdrop-blur-xl flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-2xl max-h-[85vh] rounded-[3rem] shadow-2xl overflow-hidden flex flex-col animate-in zoom-in duration-300">
@@ -90,42 +78,17 @@ const Register = () => {
                 {
                   icon: <DollarSign className="text-emerald-600" />,
                   title: "1. Earnings Policy",
-                  content: "100% of the money you earn belongs to you. You are free to set your own price, choose your own schedule, and decide how you receive your payments (PayPal, Mobile Money, Bank Transfer, etc). We do not interfere with your pricing or methods."
-                },
-                {
-                  icon: <Zap className="text-emerald-600" />,
-                  title: "2. Package-Based Allocation",
-                  content: "Visibility and student matching priority are determined by your purchased package. While higher tiers receive significantly higher exposure, packages increase visibility and do not guarantee a fixed number of students."
-                },
-                {
-                  icon: <Coins className="text-emerald-600" />,
-                  title: "3. Optional Internal Payments",
-                  content: "If you choose our internal system, we handle processing and quality control for a 15% commission per transaction. This provides additional structure and payment security."
-                },
-                {
-                  icon: <ShieldCheck className="text-emerald-600" />,
-                  title: "4. Independent Payment Option",
-                  content: "Teachers preferring external management keep 100% of their earnings. Our responsibility remains providing student visibility and matching based on your package."
+                  content: "100% of the money you earn belongs to you. You are free to set your own price, choose your own schedule, and decide how you receive your payments. We do not interfere."
                 },
                 {
                   icon: <UserCheck className="text-emerald-600" />,
-                  title: "5. Approval Process",
-                  content: "Profiles are reviewed within 24–48 hours after signup and package purchase. This ensures platform quality and professional standards for our students."
-                },
-                {
-                  icon: <Award className="text-emerald-600" />,
-                  title: "6. Professional Conduct",
-                  content: "Tutors must be punctual, deliver the full agreed duration, and maintain respectful communication. Failure to comply may result in account suspension."
+                  title: "2. Approval Process",
+                  content: "Profiles are reviewed within 24–48 hours after signup and package purchase. This ensures professional standards for our students."
                 },
                 {
                   icon: <AlertTriangle className="text-emerald-600" />,
-                  title: "7. No Student Poaching",
-                  content: "Redirecting students outside the platform to bypass policies or misrepresenting services is strictly prohibited and results in permanent suspension."
-                },
-                {
-                  icon: <Scale className="text-emerald-600" />,
-                  title: "8. Refund Policy",
-                  content: "Teacher packages are non-refundable after profile approval. Packages provide increased exposure and matching priority only."
+                  title: "3. Professional Conduct",
+                  content: "Tutors must be punctual and maintain respectful communication. Redirecting students outside the platform results in permanent suspension."
                 }
               ].map((r, i) => (
                 <div key={i} className="flex space-x-4 items-start">
@@ -137,7 +100,7 @@ const Register = () => {
 
             <div className="p-8 bg-slate-50 border-t flex flex-col md:flex-row gap-4 items-center">
               <button onClick={() => setShowRules(false)} className="order-2 md:order-1 text-slate-400 font-black text-[10px] uppercase tracking-widest px-6 cursor-pointer">Cancel</button>
-              <button onClick={executeRegister} className="order-1 md:order-2 flex-1 w-full bg-emerald-600 text-white py-5 rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest hover:bg-slate-900 transition-all shadow-xl shadow-emerald-500/20 active:scale-95 cursor-pointer">
+              <button onClick={executeRegister} className="order-1 md:order-2 flex-1 w-full bg-emerald-600 text-white py-5 rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest hover:bg-slate-900 transition-all shadow-xl active:scale-95 cursor-pointer">
                 Accept & Create Account
               </button>
             </div>
@@ -149,18 +112,14 @@ const Register = () => {
       <div className="w-full max-w-xl bg-white p-8 md:p-14 rounded-[3.5rem] shadow-2xl border border-slate-100">
         <div className="text-center mb-10">
           <div className="inline-flex bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest mb-4 border border-emerald-100 italic">
-            <Sparkles size={12} className="mr-2" /> Start Your Journey
+            <UserCheck size={12} className="mr-2" /> Elite Teacher Portal
           </div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tighter italic">Create Account</h1>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tighter italic">Join as a Tutor</h1>
+          <p className="text-slate-400 font-bold uppercase text-[8px] tracking-[0.2em] mt-2">Earn 100% of your lesson fees</p>
         </div>
 
         <form onSubmit={handlePreSubmit} className="space-y-5">
-          <div className="flex bg-slate-100 p-1.5 rounded-[1.5rem] mb-8 border border-slate-200">
-            <button type="button" onClick={() => setFormData({ ...formData, role: 'student' })}
-              className={`flex-1 py-3.5 rounded-xl text-xs font-black uppercase transition-all cursor-pointer ${formData.role === 'student' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-400'}`}>Student</button>
-            <button type="button" onClick={() => setFormData({ ...formData, role: 'teacher' })}
-              className={`flex-1 py-3.5 rounded-xl text-xs font-black uppercase transition-all cursor-pointer ${formData.role === 'teacher' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-400'}`}>Teacher</button>
-          </div>
+          {/* 🚨 REMOVED THE TOGGLE: It makes the UI look cleaner since there's only one role */}
 
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -201,32 +160,31 @@ const Register = () => {
               </button>
             </div>
 
-            {formData.role === 'teacher' && (
-              <div className="pt-2 space-y-4 animate-in fade-in slide-in-from-top-2 duration-500">
-                <select className="w-full bg-emerald-50 border border-emerald-100 rounded-2xl px-6 py-4 font-black text-emerald-600 outline-none appearance-none"
-                  onChange={(e) => setFormData({ ...formData, language: e.target.value })}>
-                  <option value="English">I teach English</option><option value="French">I teach French</option>
-                </select>
-                <input type="number" placeholder="Price per lesson ($)" required className="w-full bg-slate-50 border rounded-2xl px-6 py-4 outline-none focus:border-emerald-500 font-bold shadow-inner"
-                  onChange={(e) => setFormData({ ...formData, pricePerLesson: e.target.value })} />
-              </div>
-            )}
+            {/* 🚨 ALWAYS VISIBLE: No need for conditional check anymore */}
+            <div className="pt-2 space-y-4">
+              <select className="w-full bg-emerald-50 border border-emerald-100 rounded-2xl px-6 py-4 font-black text-emerald-600 outline-none appearance-none"
+                onChange={(e) => setFormData({ ...formData, language: e.target.value })}>
+                <option value="English">I teach English</option>
+                <option value="French">I teach French</option>
+              </select>
+              <input type="number" placeholder="Set your lesson rate ($)" required className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 outline-none focus:border-emerald-500 text-slate-900 font-bold shadow-inner"
+                onChange={(e) => setFormData({ ...formData, pricePerLesson: e.target.value })} />
+            </div>
           </div>
 
           <div className="flex items-start space-x-3 pt-4">
             <input type="checkbox" required id="terms" checked={formData.termsAccepted} onChange={(e) => setFormData({ ...formData, termsAccepted: e.target.checked })} className="mt-1 w-5 h-5 accent-emerald-600 rounded cursor-pointer shrink-0" />
-            <label htmlFor="terms" className="text-[10px] font-bold text-slate-500 leading-relaxed cursor-pointer uppercase tracking-widest italic">I agree to the <span className="text-emerald-600 underline">Terms</span> and <span className="text-emerald-600 underline">Privacy Policy</span>.</label>
+            <label htmlFor="terms" className="text-[10px] font-bold text-slate-500 leading-relaxed cursor-pointer uppercase tracking-widest italic">I agree to the <span className="text-emerald-600 underline">Teacher Protocol</span> and <span className="text-emerald-600 underline">Rules</span>.</label>
           </div>
 
-          {/* BALANCED CENTERED BUTTON */}
           <button
             type="submit"
             className="w-full mt-6 bg-slate-900 text-white py-5 rounded-[1.8rem] flex items-center justify-center gap-3 hover:bg-emerald-600 transition-all shadow-xl active:scale-95 group uppercase font-black text-[10px] tracking-widest cursor-pointer"
           >
-            <span>{formData.role === 'teacher' ? 'Review Protocol' : 'Create Account'}</span>
+            <span>Review Protocol</span>
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </button>
-          <p className="pl-8 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+          <p className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-6">
             Already Have an account? <Link to="/login" className="text-emerald-600 hover:underline">Sign in here</Link>
           </p>
         </form>
