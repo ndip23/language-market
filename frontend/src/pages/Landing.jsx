@@ -212,7 +212,8 @@ const Landing = () => {
           { t: "Full Profile Visibility", c: "Priority promotion in marketplace" },
           { t: "Teaching Materials", c: "Curated resources & lesson guides" },
           { t: "Elite Community Access", c: "Join our private mentor circle" },
-          { t: "100% Earnings Retention", c: "Keep every dollar students pay you" }
+          { t: "100% Earnings Retention", c: "Keep every dollar students pay you" },
+          { t: "profile creation", c: "profile creation is 50$ per month after the first month" }
         ].map((item, i) => (
           <div key={i} className="flex items-start space-x-4">
             <div className="bg-emerald-600 text-white p-1 rounded-full shrink-0 shadow-lg shadow-emerald-500/20">
