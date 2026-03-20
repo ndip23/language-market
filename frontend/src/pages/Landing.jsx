@@ -40,9 +40,9 @@ const Landing = () => {
                 <Link to="/register" className="bg-emerald-600 text-white px-8 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] shadow-xl hover:bg-slate-900 transition-all text-center active:scale-95">
                   Get My Profile — $5 First Month
                 </Link>
-                <button className="bg-white text-slate-900 border border-slate-200 px-8 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-slate-50 transition-all text-center">
+                {/*<button className="bg-white text-slate-900 border border-slate-200 px-8 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-slate-50 transition-all text-center">
                   Learn More
-                </button>
+                </button>*/}
             </div>
           </div>
 
