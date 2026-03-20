@@ -33,7 +33,7 @@ const Pricing = () => {
           <Link to="/register" className="w-full bg-slate-900 text-white text-center py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all">Get Started</Link>
         </div>
 
-        {/* Right Card: Pro */}
+        {/* Right Card: Pro 
         <div className="bg-slate-900 p-12 md:p-16 rounded-[3.5rem] shadow-2xl flex flex-col h-full relative overflow-hidden transform lg:scale-105">
           <div className="absolute top-0 right-0 bg-emerald-500 text-white px-10 py-3 font-black text-[10px] tracking-[0.2em] rounded-bl-[2rem] animate-pulse">MOST POPULAR</div>
           <span className="text-emerald-400 font-black text-xs uppercase tracking-widest mb-6 block bg-white/5 w-fit px-4 py-1 rounded-full border border-white/10">Tutor Pro</span>
@@ -55,7 +55,7 @@ const Pricing = () => {
           </ul>
           
           <Link to="/register" className="w-full bg-emerald-600 text-white text-center py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-500 shadow-xl shadow-emerald-500/30 transition-all">Upgrade Now</Link>
-        </div>
+        </div>*/}
       </div>
 
       {/* Info Banner */}

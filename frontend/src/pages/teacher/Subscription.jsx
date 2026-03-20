@@ -139,7 +139,7 @@ const TeacherSubscription = () => {
           </button>
         </div>
 
-        {/* PRO PLAN */}
+        {/* PRO PLAN 
         <div className={`flex flex-col p-10 rounded-[3.5rem] bg-slate-900 text-white shadow-2xl relative overflow-hidden transform lg:scale-105 transition-all border-4 border-emerald-500/20`}>
           <div className="absolute top-0 right-0 bg-emerald-500 text-white px-10 py-3 font-black text-[9px] tracking-[0.2em] rounded-bl-[2.5rem] shadow-lg animate-pulse text-center">MOST POPULAR</div>
           <div className="mb-8">
@@ -168,7 +168,7 @@ const TeacherSubscription = () => {
           >
             {user?.subscription?.plan === 'pro' ? 'Current Active Plan' : 'Activate Pro Status'}
           </button>
-        </div>
+        </div>*/}
       </div>
 
       <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-slate-100 pt-12">
