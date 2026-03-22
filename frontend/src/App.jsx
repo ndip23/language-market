@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { Toaster } from 'react-hot-toast';
+import { Analytics } from "@vercel/analytics/react";
 
 // --- COMPONENTS ---
 import Navbar from './components/Navbar';
@@ -68,6 +69,7 @@ function App() {
             style: { background: '#fff', color: '#0f172a', fontWeight: 'bold', borderRadius: '1.5rem', border: '1px solid #f1f5f9' }
           }}
         />
+        <Analytics />
 
         <Routes>
           {/* ==========================================

@@ -6,6 +6,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { FullPageLoader } from '../../components/Loader';
 import { SUPPORTED_REGIONS } from '../../constants/regions';
+import { track } from '@vercel/analytics';
 
 const TeacherSubscription = () => {
   const { user, token, login } = useContext(AuthContext);
@@ -78,6 +79,7 @@ const TeacherSubscription = () => {
   }, [region, token, user]);
 
   const handleUpgrade = (planName, price) => {
+    track('Subscription_Intent', { plan: planName, amount: price });
       navigate('/dashboard/teacher/checkout', { 
           state: { plan: { name: planName, amount: price } } 
       });
