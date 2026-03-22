@@ -1,5 +1,6 @@
 const Message = require('../models/Message');
 const Connection = require('../models/Connection');
+const mongoose = require('mongoose');
 
 // @desc    Send a private message
 // @route   POST /api/messages

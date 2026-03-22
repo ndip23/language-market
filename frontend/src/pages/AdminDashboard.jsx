@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
-import { 
-  TrendingUp, Users, CheckCircle2, 
+import {
+  TrendingUp, Users, CheckCircle2,
   Clock, Zap, Globe, Calendar
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -69,22 +69,20 @@ const AdminDashboard = () => {
           <div className="flex bg-white p-1.5 rounded-2xl shadow-sm border border-slate-100">
             <button
               onClick={() => setActiveTab('teachers')}
-              className={`px-6 md:px-8 py-3 cursor-pointer rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${
-                activeTab === 'teachers'
+              className={`px-6 md:px-8 py-3 cursor-pointer rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${activeTab === 'teachers'
                   ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/20'
                   : 'text-slate-400'
-              }`}
+                }`}
             >
               Tutors
             </button>
 
             <button
               onClick={() => setActiveTab('students')}
-              className={`px-6 md:px-8 py-3 cursor-pointer rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${
-                activeTab === 'students'
+              className={`px-6 md:px-8 py-3 cursor-pointer rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${activeTab === 'students'
                   ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/20'
                   : 'text-slate-400'
-              }`}
+                }`}
             >
               Learners
             </button>
@@ -140,7 +138,7 @@ const AdminDashboard = () => {
               <tbody className="divide-y divide-slate-50">
                 {(activeTab === 'teachers' ? data.teachers : data.students).map(u => (
                   <tr key={u._id} className="hover:bg-slate-50/50 transition-colors group">
-                    
+
                     {/* PROFILE */}
                     <td className="px-6 md:px-10 py-8 flex items-center space-x-4 min-w-[280px]">
                       <img
@@ -159,46 +157,49 @@ const AdminDashboard = () => {
                       {u.countryCode}
                     </td>
 
-                    {/* STATUS + TIMESTAMP */}
-                    <td className="px-6 py-8">
+                    {/* 🚨 UPDATED STATUS + TIMESTAMP COLUMN */}
+                    <td className="px-6 py-10">
                       {activeTab === 'teachers' ? (
                         u.subscription?.plan !== 'none' ? (
-                          <div className="flex flex-col gap-1.5">
+                          <div className="flex flex-col gap-2">
                             <span className="bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full font-black text-[8px] uppercase tracking-widest border border-emerald-100 italic w-fit">
                               Paid: {u.subscription.plan}
                             </span>
-                            
-                            {/* NEW TIMESTAMP FOR TUTOR */}
-                            <div className="flex items-center text-[7.5px] font-black text-slate-400 uppercase tracking-tighter">
-                                <Clock size={10} className="mr-1 text-emerald-500 opacity-60" />
-                                {u.subscription?.subscribedAt 
-                                  ? `${new Date(u.subscription.subscribedAt).toLocaleDateString()} @ ${new Date(u.subscription.subscribedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` 
-                                  : "DATE: N/A"}
+
+                            <div className="flex items-center text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1">
+                              <Clock size={10} className="mr-1.5 text-emerald-500 opacity-60" />
+                              {u.subscription?.subscribedAt
+                                ? `${new Date(u.subscription.subscribedAt).toLocaleDateString()} at ${new Date(u.subscription.subscribedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+                                : "DATE: N/A"}
                             </div>
                           </div>
                         ) : (
-                          <span className="bg-amber-50 text-amber-600 px-4 py-1.5 rounded-full font-black text-[8px] uppercase tracking-widest border border-amber-100 animate-pulse">
-                            Unpaid
+                          <span className="bg-amber-50 text-amber-600 px-4 py-1.5 rounded-full font-black text-[8px] uppercase tracking-widest border border-amber-100 animate-pulse italic">
+                            Payment Pending
                           </span>
                         )
                       ) : (
-                        <div className="flex flex-wrap gap-2">
+                        /* LEARNER VIEW: SHOW BOOKED TUTORS & PAYMENT DATES */
+                        <div className="flex flex-wrap gap-3 max-w-[250px]">
                           {u.bookedTutors && u.bookedTutors.length > 0 ? (
                             u.bookedTutors.map((c, i) => (
-                              <div key={i} className={`flex flex-col px-3 py-2 rounded-xl border ${c.isPaid ? 'bg-emerald-50 border-emerald-100' : 'bg-slate-50 border-slate-200'}`}>
-                                <span className={`text-[8px] font-black uppercase tracking-tighter ${c.isPaid ? 'text-emerald-600' : 'text-slate-400'}`}>
-                                  {c.teacher?.name}
-                                </span>
-                                {/* NEW TIMESTAMP FOR LESSON */}
+                              <div key={i} className={`flex flex-col p-3 rounded-2xl border transition-all ${c.isPaid ? 'bg-emerald-50/50 border-emerald-100' : 'bg-slate-50 border-slate-200'}`}>
+                                <div className="flex items-center space-x-2">
+                                  <div className={`w-1.5 h-1.5 rounded-full ${c.isPaid ? 'bg-emerald-500' : 'bg-slate-300'}`}></div>
+                                  <span className={`text-[9px] font-black uppercase tracking-tighter ${c.isPaid ? 'text-slate-900' : 'text-slate-400'}`}>
+                                    {c.teacher?.name}
+                                  </span>
+                                </div>
                                 {c.isPaid && (
-                                  <span className="text-[7px] font-black text-slate-400 mt-1 uppercase">
-                                    {c.paidAt ? `Paid: ${new Date(c.paidAt).toLocaleDateString()}` : "Paid: N/A"}
+                                  <span className="text-[7px] font-black text-slate-400 mt-2 uppercase tracking-widest flex items-center">
+                                    <CheckCircle2 size={8} className="mr-1 text-emerald-500" />
+                                    {c.paidAt ? new Date(c.paidAt).toLocaleDateString() : "DATE: N/A"}
                                   </span>
                                 )}
                               </div>
                             ))
                           ) : (
-                            <span className="text-slate-300 text-[9px] font-bold italic">No active sessions</span>
+                            <span className="text-slate-300 text-[10px] font-bold italic uppercase tracking-widest">No active sessions</span>
                           )}
                         </div>
                       )}
@@ -209,11 +210,10 @@ const AdminDashboard = () => {
                       {activeTab === 'teachers' ? (
                         <button
                           onClick={() => handleApprove(u._id, u.teacherProfile?.isApproved)}
-                          className={`px-8 py-3 rounded-full font-black text-[10px] uppercase tracking-widest shadow-lg transition-all ${
-                            u.teacherProfile?.isApproved
+                          className={`px-8 py-3 rounded-full font-black text-[10px] uppercase tracking-widest shadow-lg transition-all ${u.teacherProfile?.isApproved
                               ? 'bg-red-50 text-red-500 hover:bg-red-500 hover:text-white border border-red-100'
                               : 'bg-emerald-600 text-white hover:bg-slate-900 shadow-emerald-500/20'
-                          }`}
+                            }`}
                         >
                           {u.teacherProfile?.isApproved ? 'Suspend' : 'Approve'}
                         </button>

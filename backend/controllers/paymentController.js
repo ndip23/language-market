@@ -212,7 +212,8 @@ exports.verifyPaymentStatus = async (req, res) => {
           'subscription.plan': id,
           'subscription.studentLimit': id === 'pro' ? 20 : 6,
           'subscription.status': 'pending_approval', // Sent to Admin
-          'subscription.activeUntil': new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+          'subscription.activeUntil': new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          'subscription.paidAt': new Date() 
         });
         console.log(`✅ VERIFIED: Teacher ${value} is now Pending Approval.`);
       }
@@ -228,7 +229,8 @@ exports.verifyPaymentStatus = async (req, res) => {
           status: 'accepted',
           'pricing.grossAmount': gross,
           'pricing.platformCommission': commission,
-          'pricing.teacherEarnings': teacherNet
+          'pricing.teacherEarnings': teacherNet,
+          'paidAt': new Date()
         });
 
         if (connection) {
