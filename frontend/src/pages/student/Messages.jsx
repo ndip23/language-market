@@ -7,7 +7,7 @@ import { io } from 'socket.io-client';
 import toast from 'react-hot-toast';
 import { Loader } from '../../components/Loader';
 
-const socket = io('http://localhost:5000');
+const socket = io('https://language-market.onrender.com');
 
 const Messages = () => {
   const { user, token } = useContext(AuthContext);

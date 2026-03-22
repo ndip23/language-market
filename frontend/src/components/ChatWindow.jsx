@@ -2,8 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { io } from 'socket.io-client';
 import { AuthContext } from '../context/AuthContext';
 import { Send, User } from 'lucide-react';
-
-const socket = io('http://localhost:5000');
+const socket = io('https://language-market.onrender.com');
 
 const ChatWindow = ({ receiverId, receiverName }) => {
   const { user } = useContext(AuthContext);

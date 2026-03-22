@@ -187,84 +187,62 @@ exports.verifyPaymentStatus = async (req, res) => {
     const { transaction_id } = req.params;
     const { remark } = req.query; 
 
-    if (!remark) {
-      return res.status(400).json({ success: false, msg: "Missing transaction data" });
-    }
+    if (!remark) return res.status(400).json({ success: false, msg: "No remark" });
 
-    // 1. Get Security Token
+    // 1. Get Token and Ask Swychr
     const token = await accountPeService.login();
-
-    // 2. 🛡️ VERIFY WITH SWYCHR (Safety First)
-    // We only verify if it's not a dummy 'LATEST' ID
-    let isActuallyPaid = false;
+    
+    // We check if it's our manual 'LATEST' or verify with API
+    let isPaid = false;
     if (transaction_id !== 'LATEST' && transaction_id !== 'undefined') {
-      const verification = await accountPeService.getPaymentStatus(token, transaction_id);
-      if (verification?.data?.status === 'success' || verification?.data?.status === 'completed') {
-        isActuallyPaid = true;
+      const check = await accountPeService.getPaymentStatus(token, transaction_id);
+      if (check?.data?.status === 'success' || check?.data?.status === 'completed') {
+        isPaid = true;
       }
     } else {
-        // If ID is missing but we're in the success redirect, we allow processing
-        isActuallyPaid = true; 
+        isPaid = true; // Trust the success redirect for manual test
     }
 
-    if (isActuallyPaid) {
-      // 3. PARSE DATA FROM REMARK (e.g., "SUB|basic|userId")
+    if (isPaid) {
       const [type, id, value] = remark.split('|');
 
-      // --- CASE A: TEACHER SUBSCRIPTION ($5/$10) ---
+      // --- CASE A: TEACHER SUBSCRIPTION ---
       if (type === 'SUB') {
-        const plan = id; // 'basic' or 'pro'
-        const userId = value;
-        const limit = plan === 'pro' ? 20 : 6;
-
-        const updatedUser = await User.findByIdAndUpdate(
-          userId,
-          {
-            'subscription.plan': plan,
-            'subscription.studentLimit': limit,
-            'subscription.currentConnections': 0, // Reset for new plan
-            'subscription.status': 'pending_approval',
-            'subscription.activeUntil': new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-          },
-          { new: true },
-          console.log(`✅ Verified: Teacher ${updatedUser.name} unlocked for ${plan} plan.`)
-        );
-        
-        return res.json({ success: true, msg: "Payment Verified. Awaiting Admin Review." });
+        await User.findByIdAndUpdate(value, {
+          'subscription.plan': id,
+          'subscription.studentLimit': id === 'pro' ? 20 : 6,
+          'subscription.status': 'pending_approval', // Sent to Admin
+          'subscription.activeUntil': new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        });
+        console.log(`✅ VERIFIED: Teacher ${value} is now Pending Approval.`);
       }
 
-      // --- CASE B: LESSON PAYMENT (15% Split) ---
+      // --- CASE B: LESSON PAYMENT ---
       if (type === 'LESSON') {
-        const connectionId = id;
-        const grossAmount = Number(value);
-        const commission = grossAmount * 0.15;
-        const teacherNet = grossAmount - commission;
+        const gross = Number(value);
+        const commission = gross * 0.15; // 15%
+        const teacherNet = gross - commission;
 
-        const connection = await Connection.findByIdAndUpdate(connectionId, {
+        const connection = await Connection.findByIdAndUpdate(id, {
           isPaid: true,
           status: 'accepted',
-          'pricing.grossAmount': grossAmount,
+          'pricing.grossAmount': gross,
           'pricing.platformCommission': commission,
           'pricing.teacherEarnings': teacherNet
         });
 
-        // 💰 ADD FUNDS TO TEACHER WALLET
         if (connection) {
-          await User.findByIdAndUpdate(connection.teacher, { 
-            $inc: { balance: teacherNet } 
-          });
+          await User.findByIdAndUpdate(connection.teacher, { $inc: { balance: teacherNet } });
         }
-        console.log(`✅ Verified: Lesson paid. Platform earned ${commission}`);
+        console.log(`✅ VERIFIED: Lesson ${id} split successfully.`);
       }
 
-      return res.json({ success: true, msg: "Handshake Complete. Features Unlocked." });
+      return res.json({ success: true });
     }
 
-    // If Swychr API says it's not paid yet
-    res.status(400).json({ success: false, msg: "Payment verification pending. Try refreshing." });
-
+    res.status(400).json({ success: false });
   } catch (err) {
-    console.error("VERIFICATION CRASH:", err.message);
-    res.status(500).json({ msg: "Internal system error during verification" });
+    console.error("VERIFY ERROR:", err.message);
+    res.status(500).json({ msg: "Internal error" });
   }
 };
