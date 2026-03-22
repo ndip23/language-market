@@ -3,7 +3,7 @@ import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { 
   TrendingUp, Users, Star, DollarSign, 
-  ArrowUpRight, ShieldCheck, Wallet, Clock, Sparkles, X
+  ArrowUpRight, ShieldCheck, Wallet, Clock, Sparkles
 } from 'lucide-react';
 import TeacherPaywallView from '../../components/TeacherPaywallView';
 import toast from 'react-hot-toast';
@@ -20,34 +20,40 @@ const TeacherDashboard = () => {
   const [withdrawalData, setWithdrawalData] = useState({ amount: '', methodCode: '', accountNumber: '' });
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // 🚨 LOGIC: Check both Plan and Status
-  const hasPlan = user?.subscription?.plan && user?.subscription?.plan !== 'none';
+  // 🚨 THE FIX: Unified variable naming to prevent ReferenceErrors
+  const hasPaid = user?.subscription?.plan && user?.subscription?.plan !== 'none';
   const isApproved = user?.subscription?.status === 'active';
+  const isPendingReview = user?.subscription?.status === 'pending_approval';
 
   useEffect(() => {
     const fetchData = async () => {
+      // Only fetch private stats if the teacher is fully approved/active
       if (!isApproved) {
         setLoading(false);
         return;
       }
       try {
         const config = { headers: { 'x-auth-token': token } };
+        // Fetch Live Stats from Backend
         const statsRes = await axios.get('/dashboard/teacher/stats', config);
         setStats(statsRes.data);
+        
+        // Fetch Dynamic Payout Methods
         const methodsRes = await axios.get('/payments/methods', config);
         setPayoutMethods(methodsRes.data);
       } catch (err) {
-        console.error("Dashboard Sync Failed");
+        console.error("Dashboard Sync Failed", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
-  }, [isApproved, token]);
+    if (user && token) fetchData();
+  }, [isApproved, token, user]);
 
   const handleWithdraw = async (e) => {
     e.preventDefault();
-    if (Number(withdrawalData.amount) > stats.balance) return toast.error("Insufficient funds");
+    if (Number(withdrawalData.amount) > stats?.balance) return toast.error("Insufficient funds");
+    
     setIsProcessing(true);
     const tid = toast.loading("Processing global payout...");
     try {
@@ -56,27 +62,27 @@ const TeacherDashboard = () => {
       toast.success("Withdrawal successful!", { id: tid });
       setShowWithdrawForm(false);
     } catch (err) {
-      toast.error("Withdrawal failed", { id: tid });
+      toast.error(err.response?.data?.msg || "Withdrawal failed", { id: tid });
     } finally { setIsProcessing(false); }
   };
 
-  // 1. IF NO PAYMENT AT ALL: Show Activation Hook
-  if (!hasPlan) return (
-  <div className="space-y-12">
-    <TeacherPaywallView 
-      title="Ready to track your" 
-      feature="Earnings & Growth" 
-      benefit="Activate your professional plan to unlock real-time revenue analytics, student management, and instant payouts." 
-    />
-    <TeacherDiscovery />
-    <TrustFAQ />
-  </div>
-);
+  // 1. IF NO PAYMENT AT ALL: Show Activation Hook + Marketing
+  if (!hasPaid) return (
+    <div className="space-y-12 animate-in fade-in duration-700">
+      <TeacherPaywallView 
+        title="Ready to track your" 
+        feature="Earnings & Growth" 
+        benefit="Activate your professional plan to unlock real-time revenue analytics, student management, and instant payouts." 
+      />
+      <TeacherDiscovery />
+      <TrustFAQ />
+    </div>
+  );
 
-  // 2. 🚨 IF PAID BUT NOT APPROVED: Show Reviewing Screen
+  // 2. IF PAID BUT NOT APPROVED: Show Reviewing Screen (Clock Icon)
   if (hasPaid && !isApproved) return (
-    <div className="min-h-[70vh] flex items-center justify-center p-6 animate-in zoom-in duration-700">
-      <div className="max-w-xl w-full bg-white rounded-[3.5rem] p-12 border border-slate-100 shadow-2xl text-center relative overflow-hidden">
+    <div className="min-h-[70vh] flex items-center justify-center p-4 md:p-6 animate-in zoom-in duration-700">
+      <div className="max-w-xl w-full bg-white rounded-[3rem] md:rounded-[3.5rem] p-10 md:p-16 border border-slate-100 shadow-2xl text-center relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-[5rem] -z-10"></div>
         <div className="w-20 h-20 bg-amber-50 text-amber-500 rounded-[2.2rem] flex items-center justify-center mx-auto mb-8 shadow-inner ring-8 ring-white">
           <Clock size={40} className="animate-pulse" />
@@ -84,27 +90,27 @@ const TeacherDashboard = () => {
         <div className="inline-flex items-center bg-emerald-50 text-emerald-600 px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest mb-6 border border-emerald-100">
           <Sparkles size={12} className="mr-2" /> Application Received
         </div>
-        <h1 className="text-4xl font-black text-slate-900 tracking-tighter italic mb-4">
+        <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tighter italic mb-4 leading-tight">
           Profile Under <span className="text-amber-500 underline decoration-amber-200 decoration-8 underline-offset-8">Review.</span>
         </h1>
         <p className="text-slate-500 font-medium leading-relaxed mb-10 text-sm">
           Thank you for activating your plan. Our directors are currently vetting your professional profile. You will receive an email once your account is live (24-48h).
         </p>
         <div className="bg-slate-50 p-5 rounded-2xl inline-block border border-slate-100">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status: Payment Verified • Pending Vetting</p>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Status: Payment Verified • Pending Vetting</p>
         </div>
       </div>
     </div>
   );
 
-  // 3. IF PAID & APPROVED: Show Real Dashboard
+  // 3. IF PAID & APPROVED: Show Real Dashboard (Live Stats)
   if (loading) return <Loader />;
 
   return (
     <div className="space-y-8 md:space-y-12 animate-in fade-in duration-700 pb-20">
       {isProcessing && <FullPageLoader message="Securing Transaction..." />}
 
-      {/* WALLET SECTION */}
+      {/* WALLET SECTION - Responsive */}
       <div className="bg-slate-900 rounded-[2.5rem] md:rounded-[3.5rem] p-8 md:p-14 text-white shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 right-0 w-48 md:w-80 h-48 md:h-80 bg-emerald-500/10 rounded-bl-full -z-0"></div>
         <div className="relative z-10">
@@ -112,19 +118,19 @@ const TeacherDashboard = () => {
             <Wallet size={14} /> <span>Available Balance</span>
           </div>
           <div className="flex flex-col md:flex-row md:items-end md:space-x-4 mb-10">
-              <h2 className="text-5xl md:text-8xl font-black italic tracking-tighter">${stats?.balance?.toFixed(2)}</h2>
+              <h2 className="text-5xl md:text-8xl font-black italic tracking-tighter">${stats?.balance?.toFixed(2) || "0.00"}</h2>
               <span className="text-slate-500 font-bold text-xs uppercase tracking-widest mb-2 md:mb-4">Net Share (85%)</span>
           </div>
 
           {!showWithdrawForm ? (
-            <button onClick={() => setShowWithdrawForm(true)} className="w-full md:w-auto bg-emerald-600 text-white px-10 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-white hover:text-slate-900 transition-all shadow-xl">
+            <button onClick={() => setShowWithdrawForm(true)} className="w-full md:w-auto bg-emerald-600 text-white px-10 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-white hover:text-slate-900 transition-all shadow-xl active:scale-95">
               Withdraw Funds <ArrowUpRight size={18} className="ml-2" />
             </button>
           ) : (
             <form onSubmit={handleWithdraw} className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in slide-in-from-top-4">
                 <div className="space-y-2">
                     <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Method</label>
-                    <select required className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-xs font-black uppercase text-white outline-none focus:ring-2 ring-emerald-500/50"
+                    <select required className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-xs font-black uppercase text-white outline-none focus:ring-2 ring-emerald-500/50 cursor-pointer"
                         onChange={(e) => setWithdrawalData({...withdrawalData, methodCode: e.target.value})}>
                         <option value="" className="text-slate-900">Provider</option>
                         {payoutMethods.map(m => <option key={m.code} value={m.code} className="text-slate-900">{m.name}</option>)}
@@ -132,7 +138,7 @@ const TeacherDashboard = () => {
                 </div>
                 <div className="space-y-2">
                     <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Account</label>
-                    <input type="text" required placeholder="Account/Phone" className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-xs font-black text-white outline-none focus:ring-2 ring-emerald-500/50"
+                    <input type="text" required placeholder="Account/Phone" className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-xs font-black text-white outline-none focus:ring-2 ring-emerald-500/50 placeholder-slate-700"
                         onChange={(e) => setWithdrawalData({...withdrawalData, accountNumber: e.target.value})} />
                 </div>
                 <div className="flex flex-col justify-end space-y-2">
@@ -148,18 +154,18 @@ const TeacherDashboard = () => {
         </div>
       </div>
 
-      {/* LIVE STATS GRID */}
+      {/* LIVE STATS GRID - 1 col mobile, 2 col tablet, 4 col desktop */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
         {[
-            { label: 'Platform Rating', val: stats?.rating, icon: <Star />, color: 'text-amber-500', bg: 'bg-amber-50' },
-            { label: 'Total Students', val: stats?.totalStudents, icon: <Users />, color: 'text-blue-600', bg: 'bg-blue-50' },
-            { label: 'Pending Requests', val: stats?.pendingRequests, icon: <Clock />, color: 'text-purple-600', bg: 'bg-purple-50' },
-            { label: 'Gross Revenue', val: `$${stats?.totalEarnings}`, icon: <TrendingUp />, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+            { label: 'Market Rating', val: stats?.rating || '5.0', icon: <Star />, color: 'text-amber-500', bg: 'bg-amber-50' },
+            { label: 'Active Students', val: stats?.totalStudents || '0', icon: <Users />, color: 'text-blue-600', bg: 'bg-blue-50' },
+            { label: 'Pending Requests', val: stats?.pendingRequests || '0', icon: <Clock />, color: 'text-purple-600', bg: 'bg-purple-50' },
+            { label: 'Course Revenue', val: `$${stats?.totalEarnings || '0'}`, icon: <TrendingUp />, color: 'text-emerald-600', bg: 'bg-emerald-50' },
         ].map((s, i) => (
-          <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl transition-all group">
+          <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group">
             <div className={`${s.bg} ${s.color} w-12 h-12 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>{s.icon}</div>
-            <div className="text-4xl font-black text-slate-900 mb-1 tracking-tighter italic">{s.val}</div>
-            <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{s.label}</div>
+            <div className="text-4xl font-black text-slate-900 mb-1 tracking-tighter italic leading-none">{s.val}</div>
+            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{s.label}</div>
           </div>
         ))}
       </div>
