@@ -27,7 +27,9 @@ const Landing = () => {
                 {[
                     "Keep 100% of what students pay you",
                     "Profile live in 24-48 hours",
-                    "Students discover and book you directly"
+                    "Students discover and book you directly",
+                    "No certificate requirements or barriers",
+                    "profile creation is 50$ per month after the first month"
                 ].map((text, i) => (
                     <div key={i} className="flex items-center space-x-3">
                         <div className="bg-emerald-100 text-emerald-600 rounded-full p-1"><Check size={14} strokeWidth={4} /></div>
