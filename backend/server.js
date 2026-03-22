@@ -12,6 +12,8 @@ require('dotenv').config();
 // 1. Initialize Express App
 const app = express();
 
+app.set('trust proxy', 1); 
+
 // 2. Body Parser (Must be at the top so data is available to other middleware)
 app.use(express.json({ limit: '10kb' })); // Limits body size for security
 
