@@ -145,3 +145,44 @@ exports.getPlatformStats = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+// @desc    Send broadcast to all registered users
+// @route   POST /api/admin/broadcast
+exports.sendBroadcast = async (req, res) => {
+  const { subject, message, type } = req.body; // type: 'email' or 'whatsapp'
+
+  try {
+    const users = await User.find({}).select('email name mobile');
+    
+    if (type === 'email') {
+      console.log(`📣 BROADCAST: Sending ${users.length} emails...`);
+
+      // We use a loop to send emails
+      // Professional Tip: Use Promise.allSettled so one bad email doesn't stop the whole list
+      const emailPromises = users.map(user => {
+        const luxuryMessage = `
+          <div style="font-family:sans-serif; background:#f8fafc; padding:40px; color:#0f172a;">
+            <div style="max-width:600px; margin:0 auto; background:#fff; border-radius:30px; padding:40px; border:1px solid #e2e8f0;">
+              <h1 style="color:#10b981; italic">LangConnect Elite</h1>
+              <h2 style="font-size:24px; font-weight:900;">Hello ${user.name.split(' ')[0]},</h2>
+              <p style="font-size:16px; line-height:1.6; color:#64748b;">${message}</p>
+              <a href="https://learnlanguagehelp.site/login" style="display:inline-block; margin-top:30px; padding:18px 35px; background:#0f172a; color:#fff; text-decoration:none; border-radius:15px; font-weight:bold; font-size:12px; text-transform:uppercase; letter-spacing:2px;">Return to Portal</a>
+            </div>
+          </div>
+        `;
+        return sendEmail({ email: user.email, subject, message: luxuryMessage });
+      });
+
+      await Promise.allSettled(emailPromises);
+      return res.json({ msg: `Broadcast successfully dispatched to ${users.length} users.` });
+    }
+
+    // For WhatsApp, we return the list of numbers for the admin to use in a Broadcast list
+    if (type === 'whatsapp') {
+        const numbers = users.map(u => ({ name: u.name, mobile: u.mobile }));
+        return res.json({ msg: "WhatsApp list generated", data: numbers });
+    }
+
+  } catch (err) {
+    res.status(500).json({ msg: "Broadcast failed" });
+  }
+};
