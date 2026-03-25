@@ -4,3 +4,6 @@ dist/
 build/
 .DS_Store
 seeder.js
+temp_auto_push.bat
+temp_interactive_push.bat
+branch_structure.json

@@ -1,3 +1,4 @@
+
 export default {
   theme: {
     extend: {
@@ -17,4 +18,4 @@ export default {
       }
     }
   }
-}
+};

@@ -40,7 +40,7 @@ const Landing = () => {
 
             <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/register" className="bg-emerald-600 text-white px-8 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] shadow-xl hover:bg-slate-900 transition-all text-center active:scale-95">
-                  Get My Profile — $5 First Month
+                  Get My Profile — $3 First Month
                 </Link>
                 {/*<button className="bg-white text-slate-900 border border-slate-200 px-8 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-slate-50 transition-all text-center">
                   Learn More
@@ -187,7 +187,7 @@ const Landing = () => {
         
         <div className="flex items-baseline justify-center space-x-2">
           <span className="text-7xl md:text-8xl font-black text-slate-900 italic tracking-tighter leading-none">
-            $5
+            $3
           </span>
           <div className="text-left">
             <p className="text-slate-400 font-bold text-xs uppercase tracking-widest leading-none">First</p>
@@ -250,7 +250,7 @@ const Landing = () => {
                 Stop waiting for approval. Stop paying high commissions. Start teaching on your own terms today.
             </p>
             <Link to="/register" className="inline-flex bg-emerald-600 text-white px-10 py-6 rounded-3xl font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl hover:bg-slate-900 transition-all items-center group active:scale-95">
-              Claim My Profile — $5 First Month <ArrowRight size={18} className="ml-3 group-hover:translate-x-2 transition-transform" />
+              Claim My Profile — $3 First Month <ArrowRight size={18} className="ml-3 group-hover:translate-x-2 transition-transform" />
             </Link>
         </div>
       </section>
